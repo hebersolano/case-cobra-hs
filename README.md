@@ -2,7 +2,7 @@
   <!-- Brief -->
   <h2>Cobra Case</h2>
   <p >
-  Find The Perfect Rental. Property Pulse is a website where you can find the perfect property that suits your needs.
+  Capture your favorite memories with your own, <strong >one-of-one</strong> phone case. CaseCobra allows you to protect your memories, not just your phone
   </p>
 
   <img src="" alt="logo" width="32px" height="auto">
@@ -60,23 +60,7 @@ npm install
 - Create a dev.local file with this variables:
 
 ```env
-MONGODB_URI=""
 
-NEXT_PUBLIC_DOMAIN="http://localhost:3000"
-NEXT_PUBLIC_API="http://localhost:3000/api"
-
-NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_URL_INTERNAL="http://localhost:3000"
-NEXTAUTH_SECRET=""
-
-GOOGLE_CLIENT_ID=""
-GOOGLE_CLIENT_SECRET=""
-
-CLOUDINARY_CLOUD_NAME = ""
-CLOUDINARY_KEY=""
-CLOUDINARY_SECRET=""
-
-NEXT_PUBLIC_MAPBOX_TOKEN=""
 ```
 
 - Build command:
