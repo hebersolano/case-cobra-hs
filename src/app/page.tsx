@@ -3,6 +3,7 @@ import { Check, Star } from "lucide-react";
 import snake01 from "@/../public/snake-1.png";
 import yourImage from "@/../public/your-image.png";
 import lineImg from "@/../public/line.png";
+import testimonial01 from "@/../public/testimonials/1.jpg";
 import user01 from "@/../public/users/user-1.png";
 import user02 from "@/../public/users/user-2.png";
 import user03 from "@/../public/users/user-3.png";
@@ -98,7 +99,7 @@ export default function Home() {
                 className="absolute w-40 lg:w-52 left-56 -top-20 select-none hidden sm:block lg:hidden xl:block"
               />
               <Image src={lineImg} alt="" className="absolute w-20 -left-6 -bottom-6 select-none" />
-              <Phone />
+              <Phone className="w-64" imgSrc={testimonial01} />
             </div>
           </div>
         </MaxWidthWrapper>

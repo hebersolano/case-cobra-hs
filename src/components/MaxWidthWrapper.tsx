@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
 
-type rc = { className: string; children: ReactNode };
+type rc = { className?: string; children: ReactNode };
 
 function MaxWidthWrapper({ className, children }: rc) {
   return (
