@@ -10,6 +10,7 @@ import user03 from "@/../public/users/user-3.png";
 import user04 from "@/../public/users/user-4.jpg";
 import Image from "next/image";
 import Phone from "@/components/Phone";
+import PropositionSection from "@/components/PropositionSection";
 
 export default function Home() {
   return (
@@ -104,6 +105,8 @@ export default function Home() {
           </div>
         </MaxWidthWrapper>
       </section>
+
+      <PropositionSection />
     </div>
   );
 }
