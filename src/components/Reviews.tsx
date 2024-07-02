@@ -70,6 +70,8 @@ function ReviewGrid() {
           <ReviewColumn reviews={column03.flat()} className="hidden md:block" msPerPixel={10} />
         </>
       ) : null}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-slate-100" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-slate-100" />
     </div>
   );
 }
@@ -88,7 +90,7 @@ function ReviewColumn({ reviews, className, reviewClassName, msPerPixel = 0 }: R
 
   useEffect(function () {
     if (!columnRef.current) return;
-    const resizeObserver = new window.ResizeObserver(() => {
+    const resizeObserver = new window.ResizeObserver(function () {
       setColumnHeight(columnRef.current?.offsetHeight ?? 0);
     });
 
@@ -103,7 +105,7 @@ function ReviewColumn({ reviews, className, reviewClassName, msPerPixel = 0 }: R
     <div
       ref={columnRef}
       className={cn("animate-marquee space-y-8 py-4", className)}
-      style={{ "marquee-duration": duration } as React.CSSProperties}
+      style={{ "--marquee-duration": duration } as React.CSSProperties}
     >
       {reviews.concat(reviews).map((imgSrc, reviewIndex) => (
         <Review
