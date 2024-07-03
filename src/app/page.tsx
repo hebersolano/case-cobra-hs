@@ -1,6 +1,6 @@
-import HeroSection from "@/components/sections/HeroSection";
-import CallToActionSection from "@/components/sections/CallToActionSection";
-import PropositionSection from "@/components/sections/PropositionSection";
+import HeroSection from "@/components/containers/HeroSection";
+import CallToActionSection from "@/components/containers/CallToActionSection";
+import PropositionSection from "@/components/containers/PropositionSection";
 
 export default function Home() {
   return (
