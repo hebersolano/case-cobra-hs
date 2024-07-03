@@ -1,12 +1,12 @@
 import Image from "next/image";
-import { Icons } from "./ui/Icons";
-import MaxWidthWrapper from "./MaxWidthWrapper";
 import { Check, Star } from "lucide-react";
 
 import snake02 from "@/../public/snake-2.png";
 import user01 from "@/../public/users/user-1.png";
 import user04 from "@/../public/users/user-4.jpg";
-import Reviews from "./Reviews";
+import { Icons } from "../ui/Icons";
+import MaxWidthWrapper from "../MaxWidthWrapper";
+import Reviews from "../Reviews";
 
 function PropositionSection() {
   return (
