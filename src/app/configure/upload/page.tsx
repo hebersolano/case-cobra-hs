@@ -1,10 +1,21 @@
 "use client";
 
+import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { Image, ImageDown, Loader2, MousePointerSquareDashed } from "lucide-react";
+import { useState, useTransition } from "react";
+import Dropzone, { FileRejection } from "react-dropzone";
 
 function UploadPage() {
   const [isDragOver, setIsDrayOver] = useState<boolean>(false);
+  const [uploadProgress, setUploadProgress] = useState<number>(45);
+
+  const [isPending, startTransition] = useTransition();
+  const isUploading = true;
+
+  function dropRejectedHandler() {}
+  function dropAcceptedHandler() {}
+
   return (
     <div
       className={cn(
@@ -14,7 +25,51 @@ function UploadPage() {
         }
       )}
     >
-      <div className="relative flex flex-1 flex-col items-center justify-center w-full"></div>
+      <div className="relative flex flex-1 flex-col items-center justify-center w-full">
+        <Dropzone
+          onDropRejected={dropRejectedHandler}
+          onDropAccepted={dropAcceptedHandler}
+          accept={{
+            "image/png": [".png"],
+            "image/jpeg": [".jpeg"],
+            "image/jpg": [".jpg"],
+          }}
+          onDragEnter={() => setIsDrayOver(true)}
+          onDragLeave={() => setIsDrayOver(false)}
+        >
+          {({ getRootProps, getInputProps }) => {
+            return (
+              <div
+                className="h-full w-full flex-1 flex flex-col items-center justify-center"
+                {...getRootProps()}
+              >
+                <input {...getInputProps()} />
+                {isDragOver ? (
+                  <MousePointerSquareDashed />
+                ) : isUploading || isPending ? (
+                  <Loader2 className="animate-spin h-6 w-6" />
+                ) : (
+                  <ImageDown className="h-6 w-6 text-zinc-500 mb-2" />
+                )}
+                <div className="flex flex-col justify-center mb-2 text-sm text-zinc-700">
+                  {isUploading ? (
+                    <div className="flex flex-col items-center">
+                      <p>Uploading...</p>
+                      <Progress className="mt-2 w-40 h-2 bg-gray-300" />
+                    </div>
+                  ) : isPending ? (
+                    <div></div>
+                  ) : isDragOver ? (
+                    <span></span>
+                  ) : (
+                    <span></span>
+                  )}
+                </div>
+              </div>
+            );
+          }}
+        </Dropzone>
+      </div>
     </div>
   );
 }
