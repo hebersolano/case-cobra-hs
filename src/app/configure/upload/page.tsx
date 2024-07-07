@@ -1,20 +1,41 @@
 "use client";
 
 import { Progress } from "@/components/ui/progress";
+import { useUploadThing } from "@/lib/uploadthing";
 import { cn } from "@/lib/utils";
 import { ImageDown, Loader2, MousePointerSquareDashed } from "lucide-react";
+import { useRouter } from "next/router";
 import { useState, useTransition } from "react";
 import Dropzone, { FileRejection } from "react-dropzone";
 
 function UploadPage() {
   const [isDragOver, setIsDrayOver] = useState<boolean>(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const router = useRouter();
+
+  const { startUpload } = useUploadThing("imageUploader", {
+    onClientUploadComplete: ([data]) => {
+      const configId = data.serverData.configId;
+      startTransition(() => {
+        router.push(`configure/design?id=${configId}`);
+      });
+    },
+    onUploadProgress(p) {
+      setUploadProgress(p);
+    },
+  });
 
   const [isPending, startTransition] = useTransition();
   const isUploading = false;
 
-  function dropRejectedHandler() {}
-  function dropAcceptedHandler() {}
+  function dropRejectedHandler(rejectedFiles: FileRejection[]) {
+    const [file] = rejectedFiles;
+    setIsDrayOver(false);
+  }
+  function dropAcceptedHandler(acceptedFiles: File[]) {
+    startUpload(acceptedFiles, { configId: undefined });
+    setIsDrayOver(false);
+  }
 
   return (
     <div
