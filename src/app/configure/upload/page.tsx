@@ -2,16 +2,16 @@
 
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import { Image, ImageDown, Loader2, MousePointerSquareDashed } from "lucide-react";
+import { ImageDown, Loader2, MousePointerSquareDashed } from "lucide-react";
 import { useState, useTransition } from "react";
 import Dropzone, { FileRejection } from "react-dropzone";
 
 function UploadPage() {
   const [isDragOver, setIsDrayOver] = useState<boolean>(false);
-  const [uploadProgress, setUploadProgress] = useState<number>(45);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
 
   const [isPending, startTransition] = useTransition();
-  const isUploading = true;
+  const isUploading = false;
 
   function dropRejectedHandler() {}
   function dropAcceptedHandler() {}
@@ -44,6 +44,7 @@ function UploadPage() {
                 {...getRootProps()}
               >
                 <input {...getInputProps()} />
+
                 {isDragOver ? (
                   <MousePointerSquareDashed />
                 ) : isUploading || isPending ? (
@@ -51,6 +52,7 @@ function UploadPage() {
                 ) : (
                   <ImageDown className="h-6 w-6 text-zinc-500 mb-2" />
                 )}
+
                 <div className="flex flex-col justify-center mb-2 text-sm text-zinc-700">
                   {isUploading ? (
                     <div className="flex flex-col items-center">
@@ -58,13 +60,21 @@ function UploadPage() {
                       <Progress className="mt-2 w-40 h-2 bg-gray-300" />
                     </div>
                   ) : isPending ? (
-                    <div></div>
+                    <div className="flex flex-col items-center">
+                      <p>Redirecting, please wait...</p>
+                    </div>
                   ) : isDragOver ? (
-                    <span></span>
+                    <p>
+                      <span className="font-semibold">Drop File</span> to upload
+                    </p>
                   ) : (
-                    <span></span>
+                    <p>
+                      <span className="font-semibold">Click to upload</span> or drag and drop
+                    </p>
                   )}
                 </div>
+
+                {!isPending && <p className="text-sm text-zinc-500">PNG, JPG, JPEG</p>}
               </div>
             );
           }}
