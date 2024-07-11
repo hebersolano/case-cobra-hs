@@ -37,7 +37,6 @@ export default function Steps() {
       {STEPS.map((step, i) => {
         const isCurrent = pathname.endsWith(step.url);
         const isCompleted = STEPS.slice(i + 1).some((step) => pathname.endsWith(step.url));
-        console.log("isCurrent", isCurrent, "isCompleted", isCompleted);
 
         return (
           <Step
