@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ImageNext from "next/image";
 
 import { Rnd } from "react-rnd";
@@ -16,7 +16,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, ChevronsUpDown } from "lucide-react";
 
-import { cn, dataURLtoFile, formatPrice, srcToFile } from "@/lib/utils";
+import phoneTemplate from "@/../public/phone-template.png";
+import { cn, dataURLtoFile, formatPrice } from "@/lib/utils";
 import HandleComponent from "@/components/HandleComponent";
 import { BASE_PRICE } from "@/config/products";
 import { COLORS, FINISHES, MATERIALS, MODELS } from "@/validators/option-validator";
@@ -37,9 +38,26 @@ export type OptionsStateT = {
   finish: (typeof FINISHES.options)[number];
 };
 
+const INIT_DIM = {
+  left: 0,
+  top: 0,
+  width: 0,
+  height: 0,
+};
+
 function DesignConfiguration({ configId, imgUrl, imgDimension }: CompProps) {
   const { toast } = useToast();
   const router = useRouter();
+
+  const phoneCaseRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const canvasDivRef = useRef<HTMLDivElement>(null);
+  const phoneCase = phoneCaseRef.current?.getBoundingClientRect() || INIT_DIM;
+  const container = containerRef.current?.getBoundingClientRect() || INIT_DIM;
+  const leftOffset = phoneCaseRef.current ? phoneCase.left - container.left : 0;
+  const topOffset = phoneCaseRef.current ? phoneCase.top - container.top : 0;
+  console.log(leftOffset, topOffset);
+
   const [options, setOptions] = useState<OptionsStateT>({
     color: COLORS[0],
     model: MODELS.options[MODELS.options.length - 1],
@@ -52,14 +70,15 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: CompProps) {
     height: imgDimension.height / 4,
   });
   const [renderedPosition, setRenderedPosition] = useState({
-    x: 150,
-    y: 205,
+    x: 0,
+    y: 0,
   });
 
-  const phoneCaseRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
   const { startUpload, isUploading } = useUploadThing("imageUploader", {
+    onClientUploadComplete: ([data]) => {
+      const configId = data.serverData.configId;
+      router.push(`/configure/preview?id=${configId}`);
+    },
     onUploadError: (err) => {
       console.log("some upload error", err);
       toast({
@@ -68,62 +87,53 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: CompProps) {
         variant: "destructive",
       });
     },
-    onClientUploadComplete: ([data]) => {
-      const configId = data.serverData.configId;
-      router.push(`/preview?id=${configId}`);
-    },
-    onUploadProgress(p) {},
   });
+
+  function updateInitCoors() {
+    // calc new width if height of img fit case
+    const imgWidth = (phoneCase.height * imgDimension.width) / imgDimension.height;
+    // calc img x coord to center img in case
+    const imgCenterX = leftOffset + phoneCase.width / 2 - imgWidth / 2;
+    setRenderedPosition({ x: imgCenterX, y: topOffset });
+    setRenderedDim({ width: imgWidth, height: phoneCase.height });
+  }
 
   async function saveConfiguration() {
     console.log("saveConfig running");
     try {
-      const {
-        left: caseLeft,
-        top: caseTop,
-        width,
-        height,
-      } = phoneCaseRef.current!.getBoundingClientRect();
-      const { left: containerLeft, top: containerTop } =
-        containerRef.current!.getBoundingClientRect();
+      const actualX = renderedPosition.x ? renderedPosition.x - leftOffset : leftOffset;
+      const actualY = renderedPosition.y ? renderedPosition.y - topOffset : topOffset;
 
-      const leftOffset = caseLeft - containerLeft;
-      const topOffset = caseTop - containerTop;
-
-      const actualX = renderedPosition.x - leftOffset;
-      const actualY = (renderedPosition.y = topOffset);
+      console.log("case w", phoneCase.width, "case h", phoneCase.height);
+      console.log("actual x", actualX, "actual y", actualY);
 
       const canvas = document.createElement("canvas");
-      canvas.width = width;
-      canvas.height = height;
+      canvas.width = phoneTemplate.width;
+      canvas.height = phoneTemplate.height;
       const ctx = canvas.getContext("2d");
 
       const userImg = new Image();
       userImg.crossOrigin = "anonymous";
       userImg.src = imgUrl;
-      console.log(imgUrl);
       await new Promise((resolve) => (userImg.onload = resolve));
-      console.log(userImg);
+      // rescale units to create a img with better resolution
+      const scale = phoneTemplate.width / phoneCase.width;
 
-      ctx?.drawImage(userImg, actualX, actualY, renderedDim.width, renderedDim.height);
+      ctx?.drawImage(
+        userImg,
+        actualX * scale,
+        actualY * scale,
+        renderedDim.width * scale,
+        renderedDim.height * scale
+      );
 
-      const base64 = canvas.toDataURL("image/png", 1.0);
-      console.log(base64);
-      const file = dataURLtoFile(base64, "filename.png");
+      const dataURL = canvas.toDataURL("image/webp", 1);
+      const file = await dataURLtoFile(dataURL, `canvas-${configId}.webp`);
       console.log(file);
-      // const base64Data = base64.split(",")[1];
 
-      // const blob = base64toBlob(base64Data, "image/png");
-      // const file = new File([blob], "filename.png", { type: "image/png" });
-      // console.log(file, "file to upload");
       await startUpload([file], {
         configId,
-        caseConfig: {
-          color: options.color,
-          finish: options.finish,
-          material: options.material,
-          model: options.model,
-        },
+        caseConfig: options,
       });
     } catch (error) {
       toast({
@@ -138,7 +148,7 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: CompProps) {
     <div className="relative mt-20 grid grid-cols-1 lg:grid-cols-3 mb-20 pb-20">
       <div
         ref={containerRef}
-        className="relative h-[37.5rem] overflow-hidden col-span-2 w-full max-w-4xl flex items-center justify-center rounded-lg border-2 border-dashed border-grey-300 p-12 text-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        className="relative h-[37.5rem] overflow-hidden col-span-2 w-full max-w-4xl flex items-center justify-center rounded-lg border-2 border-dashed border-grey-300 text-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
       >
         <div className="relative w-60 bg-opacity-50 pointer-events-none aspect-[896/1831]">
           <AspectRatio
@@ -149,7 +159,7 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: CompProps) {
             <ImageNext
               fill
               alt="phone image"
-              src="/phone-template.png"
+              src={phoneTemplate}
               className="pointer-events-none z-50 select-none"
             />
           </AspectRatio>
@@ -163,12 +173,8 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: CompProps) {
         </div>
 
         <Rnd
-          default={{
-            x: 150,
-            y: 205,
-            height: imgDimension.height / 4,
-            width: imgDimension.width / 4,
-          }}
+          size={renderedDim}
+          position={renderedPosition}
           onResizeStop={(_, __, ref, ___, { x, y }) => {
             setRenderedDim({
               height: parseInt(ref.style.height.slice(0, -2)),
@@ -180,7 +186,7 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: CompProps) {
             const { x, y } = data;
             setRenderedPosition({ x, y });
           }}
-          className="absolute z-20 border-[3px] border-primary"
+          className="absolute z-20 border-[3px] border-primary animate-appears"
           lockAspectRatio
           resizeHandleComponent={{
             bottomRight: <HandleComponent />,
@@ -189,8 +195,14 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: CompProps) {
             topRight: <HandleComponent />,
           }}
         >
-          <div className="relative w-full h-full">
-            <ImageNext src={imgUrl} fill alt="your image" className="pointer-events-none" />
+          <div className="relative w-full h-full ">
+            <ImageNext
+              onLoad={updateInitCoors}
+              src={imgUrl}
+              fill
+              alt="your image"
+              className="pointer-events-none"
+            />
           </div>
         </Rnd>
       </div>
@@ -350,6 +362,7 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: CompProps) {
           </div>
         </div>
       </div>
+      <div id="canvasDiv" ref={canvasDivRef}></div>
     </div>
   );
 }

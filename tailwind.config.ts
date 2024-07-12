@@ -66,6 +66,13 @@ const config = {
             opacity: "1",
           },
         },
+        appears: {
+          "0%": { opacity: "0" },
+          "80%": { opacity: "0" },
+          "100%": {
+            opacity: "1",
+          },
+        },
         marquee: {
           "100%": {
             transform: "translateY(-50%)",
@@ -75,6 +82,7 @@ const config = {
       animation: {
         "fade-in": "fade-in 0.5s linear forwards",
         marquee: "marquee var(--marquee-duration) linear infinite", // Review animation
+        appears: "appears 3s ease-in forwards",
       },
     },
   },

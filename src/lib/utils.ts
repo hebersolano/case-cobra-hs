@@ -31,27 +31,26 @@ export async function fetchImgBuffer(url: string) {
   );
 }
 
-export function dataURLtoFile(dataurl: string, filename: string) {
-  let arr = dataurl.split(","),
-    mime = arr[0].match(/:(.*?);/)[1],
-    bstr = atob(arr[arr.length - 1]),
-    n = bstr.length,
-    u8arr = new Uint8Array(n);
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n);
-  }
-  return new File([u8arr], filename, { type: mime });
-}
+export function dataURLtoFile(dataURL: string, fileName: string) {
+  let mimeType = dataURL.split(",")[0].split(":")[1].split(";")[0];
 
-export function srcToFile(src: string, fileName: string, mimeType?: string) {
-  let mimeString = src.split(",")[0].split(":")[1].split(";")[0];
-  console.log(mimeString, "mimetype");
-  return fetch(src)
+  return fetch(dataURL)
     .then(function (res) {
-      console.log(res);
       return res.arrayBuffer();
     })
     .then(function (buf) {
-      return new File([buf], fileName, { type: mimeString });
+      return new File([buf], fileName, { type: mimeType });
     });
 }
+
+// export function dataURLtoFile(dataurl: string, filename: string) {
+//   let arr = dataurl.split(","),
+//     mime = arr[0].match(/:(.*?);/)[1],
+//     bstr = atob(arr[arr.length - 1]),
+//     n = bstr.length,
+//     u8arr = new Uint8Array(n);
+//   while (n--) {
+//     u8arr[n] = bstr.charCodeAt(n);
+//   }
+//   return new File([u8arr], filename, { type: mime });
+// }
