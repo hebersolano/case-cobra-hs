@@ -13,13 +13,14 @@ function UploadPage() {
   const { toast } = useToast();
   const [isDragOver, setIsDrayOver] = useState<boolean>(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   const { startUpload, isUploading } = useUploadThing("imageUploader", {
     onClientUploadComplete: ([data]) => {
       const configId = data.serverData.configId;
       startTransition(() => {
-        router.push(`/design?id=${configId}`);
+        router.push(`/configure/design?id=${configId}`);
       });
     },
     onUploadProgress(p) {
@@ -27,8 +28,6 @@ function UploadPage() {
       setUploadProgress(p);
     },
   });
-
-  const [isPending, startTransition] = useTransition();
 
   function dropRejectedHandler(rejectedFiles: FileRejection[]) {
     const [file] = rejectedFiles;
@@ -90,7 +89,7 @@ function UploadPage() {
                   {isUploading ? (
                     <div className="flex flex-col items-center">
                       <p>Uploading...</p>
-                      <Progress className="mt-2 w-40 h-2 bg-gray-300" />
+                      <Progress value={uploadProgress} className="mt-2 w-40 h-2 bg-gray-300" />
                     </div>
                   ) : isPending ? (
                     <div className="flex flex-col items-center">

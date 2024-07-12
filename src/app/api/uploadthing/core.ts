@@ -3,23 +3,34 @@ import { UploadThingError } from "uploadthing/server";
 import { z } from "zod";
 import sharp from "sharp";
 import db from "@/db";
+import { OptionsStateT } from "@/app/configure/design/DesignConfigurator";
+import { error } from "console";
+import { url } from "inspector";
+import { fetchImgBuffer } from "@/lib/utils";
 
 const f = createUploadthing();
-
-const auth = (req: Request) => ({ id: "fakeId" }); // Fake auth function
 
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
   imageUploader: f({ image: { maxFileSize: "4MB" } })
-    .input(z.object({ configId: z.string().optional() }))
+    .input(
+      z.object({
+        configId: z.string().optional(),
+        caseConfig: z.custom<OptionsStateT>().optional(),
+      })
+    )
     .middleware(async ({ input }) => {
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
       return { input };
     })
     .onUploadComplete(async ({ metadata, file }) => {
       const { configId } = metadata.input;
-      const res = await fetch(file.url);
-      const buffer = await res.arrayBuffer();
+
+      console.log("img url", file.url);
+      // const res = await fetch(file.url);
+      // const buffer = await res.arrayBuffer();
+      const buffer = await fetchImgBuffer(file.url);
+
       const imgMetadata = await sharp(buffer).metadata();
       const { width, height } = imgMetadata;
 
