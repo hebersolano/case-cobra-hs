@@ -8,7 +8,6 @@ interface PageProps {
 }
 
 async function page({ searchParams }: PageProps) {
-  console.log("is valid id");
   const { id } = searchParams;
   if (!id || typeof id !== "string" || !isCuid(id)) notFound();
   const configuration = await db.configuration.findUnique({

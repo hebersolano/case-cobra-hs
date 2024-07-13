@@ -1,12 +1,9 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
-import { UploadThingError } from "uploadthing/server";
 import { z } from "zod";
 import sharp from "sharp";
 import db from "@/db";
-import { OptionsStateT } from "@/app/configure/design/DesignConfigurator";
-import { error } from "console";
-import { url } from "inspector";
 import { fetchImgBuffer } from "@/lib/utils";
+import { OptionsCaseT } from "@/lib/types";
 
 const f = createUploadthing();
 
@@ -16,7 +13,7 @@ export const ourFileRouter = {
     .input(
       z.object({
         configId: z.string().optional(),
-        caseConfig: z.custom<OptionsStateT>().optional(),
+        caseConfig: z.custom<OptionsCaseT>().optional(),
       })
     )
     .middleware(async ({ input }) => {
@@ -24,17 +21,13 @@ export const ourFileRouter = {
       return { input };
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      const { configId } = metadata.input;
-
-      console.log("img url", file.url);
-      // const res = await fetch(file.url);
-      // const buffer = await res.arrayBuffer();
-      const buffer = await fetchImgBuffer(file.url);
-
-      const imgMetadata = await sharp(buffer).metadata();
-      const { width, height } = imgMetadata;
+      const { configId, caseConfig } = metadata.input;
 
       if (!configId) {
+        const buffer = await fetchImgBuffer(file.url);
+        const imgMetadata = await sharp(buffer).metadata();
+        const { width, height } = imgMetadata;
+
         const configuration = await db.configuration.create({
           data: { imgUrl: file.url, height: height || 500, width: width || 500 },
         });
@@ -47,6 +40,10 @@ export const ourFileRouter = {
           },
           data: {
             croppedImgUrl: file.url,
+            color: caseConfig?.color.value,
+            model: caseConfig?.model.value!,
+            material: caseConfig?.material.value,
+            finish: caseConfig?.finish.value,
           },
         });
 

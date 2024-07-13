@@ -24,19 +24,7 @@ import { COLORS, FINISHES, MATERIALS, MODELS } from "@/validators/option-validat
 import { useUploadThing } from "@/lib/uploadthing";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
-
-type CompProps = {
-  configId: string;
-  imgUrl: string;
-  imgDimension: { width: number; height: number };
-};
-
-export type OptionsStateT = {
-  color: (typeof COLORS)[number];
-  model: (typeof MODELS.options)[number];
-  material: (typeof MATERIALS.options)[number];
-  finish: (typeof FINISHES.options)[number];
-};
+import { DesignPageProps, OptionsCaseT } from "@/lib/types";
 
 const INIT_DIM = {
   left: 0,
@@ -45,22 +33,23 @@ const INIT_DIM = {
   height: 0,
 };
 
-function DesignConfiguration({ configId, imgUrl, imgDimension }: CompProps) {
+function DesignConfiguration({ configId, imgUrl, imgDimension }: DesignPageProps) {
   const { toast } = useToast();
   const router = useRouter();
 
   const phoneCaseRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasDivRef = useRef<HTMLDivElement>(null);
+
   const phoneCase = phoneCaseRef.current?.getBoundingClientRect() || INIT_DIM;
   const container = containerRef.current?.getBoundingClientRect() || INIT_DIM;
   const leftOffset = phoneCaseRef.current ? phoneCase.left - container.left : 0;
   const topOffset = phoneCaseRef.current ? phoneCase.top - container.top : 0;
   console.log(leftOffset, topOffset);
 
-  const [options, setOptions] = useState<OptionsStateT>({
+  const [options, setOptions] = useState<OptionsCaseT>({
     color: COLORS[0],
-    model: MODELS.options[MODELS.options.length - 1],
+    model: MODELS.options[0],
     material: MATERIALS.options[0],
     finish: FINISHES.options[0],
   });
@@ -80,7 +69,6 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: CompProps) {
       router.push(`/configure/preview?id=${configId}`);
     },
     onUploadError: (err) => {
-      console.log("some upload error", err);
       toast({
         title: "Something went wrong",
         description: "There was a problem saving your config, please try again.",

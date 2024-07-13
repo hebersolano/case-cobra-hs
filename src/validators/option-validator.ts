@@ -13,7 +13,7 @@ export const COLORS = [
 export const MODELS = {
   name: "models",
   options: [
-    { label: "Iphone X", value: "iphone-x" },
+    { label: "Iphone X", value: "iphonex" },
     { label: "Iphone 11", value: "iphone11" },
     { label: "Iphone 12", value: "iphone12" },
     { label: "Iphone 13", value: "iphone13" },
