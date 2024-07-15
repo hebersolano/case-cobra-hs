@@ -1,8 +1,12 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Loading from "@/components/Loading";
 
 function AuthCallbackPage() {
+  const router = useRouter();
+  console.log("running auth callback page after login");
   const [configId, setConfigId] = useState<string | null>(null);
 
   useEffect(function () {
@@ -10,8 +14,14 @@ function AuthCallbackPage() {
     if (id) setConfigId(id);
   }, []);
 
-  console.log("config", configId);
-  return <div>AuthCallbackPage</div>;
+  if (configId) {
+    router.push(`/configure/preview?id=${configId}`);
+    localStorage.removeItem("configurationId");
+  } else {
+    router.push("/");
+  }
+
+  return <Loading />;
 }
 
 export default AuthCallbackPage;

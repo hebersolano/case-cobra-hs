@@ -3,6 +3,7 @@ import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { NextResponse } from "next/server";
 
 export async function GET() {
+  console.log("running success route after login...");
   const { getUser } = getKindeServerSession();
 
   const user = await getUser();
@@ -19,5 +20,7 @@ export async function GET() {
     await db.user.create({ data: { id: user.id, email: user.email } });
   }
 
-  return NextResponse.redirect(process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000/");
+  return NextResponse.redirect(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/auth-callback` || "http://localhost:3000/"
+  );
 }

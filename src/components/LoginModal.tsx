@@ -15,7 +15,7 @@ function LoginModal({
 }) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="">
+      <DialogContent>
         <DialogHeader>
           <div className="relative mx-auto w-24 h-24 mb-2">
             <Image src={snake01} alt="snake image" className="object-contain" fill />
@@ -31,7 +31,7 @@ function LoginModal({
 
         <div className="grid grid-cols-2 gap-6 divide-x divide-gray-200">
           <LoginLink className={buttonVariants({ variant: "outline" })}>Login</LoginLink>
-          <RegisterLink className={buttonVariants({ variant: "default" })}>Login</RegisterLink>
+          <RegisterLink className={buttonVariants({ variant: "default" })}>Sign up</RegisterLink>
         </div>
       </DialogContent>
     </Dialog>

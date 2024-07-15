@@ -2,6 +2,8 @@ import db from "@/db";
 import { isCuid } from "@paralleldrive/cuid2";
 import { notFound } from "next/navigation";
 import DesignPreview from "./DesignPreview";
+import { Suspense } from "react";
+import Loading from "@/components/Loading";
 
 interface PageProps {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -16,7 +18,11 @@ async function PreviewPage({ searchParams }: PageProps) {
   });
   if (!configuration || !configuration?.croppedImgUrl) notFound();
 
-  return <DesignPreview userConfig={configuration} />;
+  return (
+    <Suspense fallback={<Loading />}>
+      <DesignPreview userConfig={configuration} />;
+    </Suspense>
+  );
 }
 
 export default PreviewPage;
