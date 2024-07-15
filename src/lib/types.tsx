@@ -1,4 +1,4 @@
-import { COLORS, FINISHES, MATERIALS, MODELS } from "@/validators/option-validator";
+import { COLORS, FINISHES, MATERIALS, MODELS } from "@/lib/validators/option-validator";
 
 export type DesignPageProps = {
   configId: string;

@@ -12,7 +12,7 @@ export function formatPrice(price: number) {
     currency: "USD",
   });
 
-  return formatter.format(price);
+  return formatter.format(price / 100);
 }
 
 export async function fetchImgBuffer(url: string) {

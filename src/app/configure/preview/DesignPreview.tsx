@@ -1,18 +1,39 @@
+"use client";
 import Phone from "@/components/Phone";
 import { Button } from "@/components/ui/button";
 import { BASE_PRICE, PRODUCT_PRICE } from "@/config/products";
 import { cn, formatPrice } from "@/lib/utils";
-import { COLORS, FINISHES, MODELS } from "@/validators/option-validator";
+import { COLORS, FINISHES, MODELS } from "@/lib/validators/option-validator";
 import { Configuration } from "@prisma/client";
 import { ArrowRight, Check } from "lucide-react";
+import { useState, useTransition } from "react";
+import { createCheckoutSession } from "./actions";
+import { useRouter } from "next/navigation";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import LoginModal from "@/components/LoginModal";
 
 function DesignPreview({ userConfig }: { userConfig: Configuration }) {
+  const router = useRouter();
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
+  const [isRedirecting, startRedirecting] = useTransition();
+  const { isAuthenticated, user } = useKindeBrowserClient();
+
+  async function handleCheckout() {
+    if (isAuthenticated && user?.id) {
+      const { url } = await createCheckoutSession({ configId: userConfig.id });
+      if (!url) throw new Error("Unable to redirect to Stripe");
+      router.push(url);
+    } else {
+      localStorage.setItem("configurationId", userConfig.id);
+      setIsLoginModalOpen(true);
+    }
+  }
+
   const { croppedImgUrl, color, model, finish, material } = userConfig;
   const caseColor = COLORS.find((supportedColors) => supportedColors.value === color);
   const phoneModel = MODELS.options.find(
     (supportedModels) => supportedModels.value === model
   )?.label;
-  const isLoading = true;
 
   let orderTotalPrice = BASE_PRICE;
   if (material === "polycarbonate") orderTotalPrice += PRODUCT_PRICE.material.polycarbonate;
@@ -20,6 +41,8 @@ function DesignPreview({ userConfig }: { userConfig: Configuration }) {
 
   return (
     <div className="mt-20 grid grid-cols-1 text-sm sm:grid-cols-12 sm:grid-rows-1 sm:gap-x-6 md:gap-x-8 lg:gap-x-12">
+      <LoginModal isOpen={isLoginModalOpen} setIsOpen={setIsLoginModalOpen} />
+
       <div className="sm:col-span-4 md:col-span-3 md:row-span-2 md:row-end-2">
         <Phone imgSrc={croppedImgUrl!} className={cn(`bg-${caseColor?.tw}`)} />
       </div>
@@ -81,9 +104,10 @@ function DesignPreview({ userConfig }: { userConfig: Configuration }) {
 
           <div className="mt-8 flex justify-end pb-12">
             <Button
-              isLoading={isLoading}
+              onClick={startRedirecting.bind(null, handleCheckout)}
+              isLoading={isRedirecting}
               loadingText="redirecting..."
-              disabled={isLoading}
+              disabled={isRedirecting}
               className="px-4 sm:px-6 lg:px-8"
             >
               Check out <ArrowRight className="h-4 w-4 ml-1.5 inline" />

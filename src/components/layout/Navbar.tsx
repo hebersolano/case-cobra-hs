@@ -6,7 +6,9 @@ import { buttonVariants } from "../ui/button";
 
 async function Nabvar() {
   const { getUser } = getKindeServerSession();
-  const user = await getUser();
+  const user = await getUser().then((user) => {
+    return user;
+  });
   const isAdmin = user?.email === process.env.ADMIN_EMAIL;
 
   return (

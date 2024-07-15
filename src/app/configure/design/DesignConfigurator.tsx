@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import ImageNext from "next/image";
 
 import { Rnd } from "react-rnd";
@@ -20,7 +20,7 @@ import phoneTemplate from "@/../public/phone-template.png";
 import { cn, dataURLtoFile, formatPrice } from "@/lib/utils";
 import HandleComponent from "@/components/HandleComponent";
 import { BASE_PRICE } from "@/config/products";
-import { COLORS, FINISHES, MATERIALS, MODELS } from "@/validators/option-validator";
+import { COLORS, FINISHES, MATERIALS, MODELS } from "@/lib/validators/option-validator";
 import { useUploadThing } from "@/lib/uploadthing";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
@@ -338,9 +338,11 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: DesignPageProps
                 {formatPrice(BASE_PRICE + options.finish.price + options.material.price)}
               </p>
               <Button
-                onClick={() => saveConfiguration()}
+                onClick={saveConfiguration}
                 className="w-full"
                 size="sm"
+                isLoading={isUploading}
+                loadingText="Uploading..."
                 disabled={isUploading}
               >
                 Continue
