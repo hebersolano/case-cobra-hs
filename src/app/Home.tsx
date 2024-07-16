@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { ArrowRight, Check, Star } from "lucide-react";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
-import PropositionSection from "@/components/PropositionSection";
 import snake01 from "@/../public/snake-1.png";
 import yourImage from "@/../public/your-image.png";
 import lineImg from "@/../public/line.png";
@@ -16,6 +15,7 @@ import horseImg from "@/../public/horse.jpg";
 import horsePhoneImg from "@/../public/horse_phone.jpg";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
+import PropositionSection from "@/components/containers/PropositionSection";
 
 export default function Home() {
   return (

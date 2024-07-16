@@ -10,7 +10,7 @@ function LoadingPage() {
   return (
     <div className="bg-blue-50 flex flex-1 justify-center items-center">
       <ClipLoader
-        color="rgb(var(--primary-foreground))"
+        color="hsl(var(--primary-foreground))"
         loading={true}
         cssOverride={override}
         size={150}
