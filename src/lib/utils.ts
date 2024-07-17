@@ -54,3 +54,22 @@ export function dataURLtoFile(dataURL: string, fileName: string) {
 //   }
 //   return new File([u8arr], filename, { type: mime });
 // }
+
+type Roles = {
+  name: string;
+  value:
+    | {
+        id: string;
+        key: string;
+        name: string;
+      }[]
+    | string;
+} | null;
+
+export function checkIsAdmin(roles: Roles): boolean {
+  if (roles?.name !== "roles") return false;
+  if (typeof roles.value === "string" && roles.value === "admin") return true;
+  if (typeof roles.value === "object" && roles.value instanceof Array) {
+    return roles.value.some((role) => role.key === "admin");
+  } else return false;
+}

@@ -14,6 +14,9 @@ importers:
       '@kinde-oss/kinde-auth-nextjs':
         specifier: ^2.3.5
         version: 2.3.5(@babel/core@7.24.7)(next@14.2.4(@babel/core@7.24.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@kinde/management-api-js':
+        specifier: ^0.8.0
+        version: 0.8.0
       '@paralleldrive/cuid2':
         specifier: ^2.2.2
         version: 2.2.2
@@ -931,6 +934,12 @@ packages:
   '@kinde-oss/kinde-typescript-sdk@2.9.1':
     resolution: {integrity: sha512-3BBFQ3/WgAgoWigfpK9ItUkpyleuHN14in+V44NLWi+zHwE1B8II/HR5CHhw+s6qR1wyJwQh4ddz2tUJwEXysg==}
 
+  '@kinde/jwt-decoder@0.2.0':
+    resolution: {integrity: sha512-dqtwCmAvywOVLkkUfp4UbqdvVLsK0cvHsJhU3gDY9rgjAdZhGw0vCreBW6j3MFLxbi6cZm7pMU7/O5SJgvN5Rw==}
+
+  '@kinde/management-api-js@0.8.0':
+    resolution: {integrity: sha512-4qxT1YarwU6dK+eh/GTRkm+IZCi/XAbMgNlCX61iYM3rlFVwWiqsjnvcNDMEBgow5kObO7TqPCm3O/8F8Kay1A==}
+
   '@next/env@14.2.4':
     resolution: {integrity: sha512-3EtkY5VDkuV2+lNmKlbkibIJxcO4oIHEhBWne6PaAp+76J9KoSsGvNikp6ivzAT8dhhBMYrm6op2pS1ApG0Hzg==}
 
@@ -1634,6 +1643,10 @@ packages:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
 
+  aws-jwt-verify@4.0.1:
+    resolution: {integrity: sha512-kzvi71eD3w/mCpYRUY7cz6DX4bfYihGdI2yV3FYQ2JuZZenqAqDPz0gWj0ew6vlAtdEVBNb7p+Dm2TAIxpVYMA==}
+    engines: {node: '>=14.0.0'}
+
   axe-core@4.9.1:
     resolution: {integrity: sha512-QbUdXJVTpvUTHU7871ppZkdOLBeGUKBQWHkHrvN2V9IQWGMt61zf3B45BtzjxEJzYuj0JBjBZP/hmYS/R9pmAw==}
     engines: {node: '>=4'}
@@ -1854,6 +1867,10 @@ packages:
   doctrine@3.0.0:
     resolution: {integrity: sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==}
     engines: {node: '>=6.0.0'}
+
+  dotenv@16.4.5:
+    resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
+    engines: {node: '>=12'}
 
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
@@ -4196,6 +4213,14 @@ snapshots:
       jose: 5.6.3
       uncrypto: 0.1.3
 
+  '@kinde/jwt-decoder@0.2.0': {}
+
+  '@kinde/management-api-js@0.8.0':
+    dependencies:
+      '@kinde/jwt-decoder': 0.2.0
+      aws-jwt-verify: 4.0.1
+      dotenv: 16.4.5
+
   '@next/env@14.2.4': {}
 
   '@next/eslint-plugin-next@14.2.4':
@@ -4888,6 +4913,8 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.0.0
 
+  aws-jwt-verify@4.0.1: {}
+
   axe-core@4.9.1: {}
 
   axobject-query@3.1.1:
@@ -5125,6 +5152,8 @@ snapshots:
   doctrine@3.0.0:
     dependencies:
       esutils: 2.0.3
+
+  dotenv@16.4.5: {}
 
   eastasianwidth@0.2.0: {}
 

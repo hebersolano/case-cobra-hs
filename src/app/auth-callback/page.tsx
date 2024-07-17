@@ -7,14 +7,19 @@ import { useRouter } from "next/navigation";
 function AuthCallbackPage() {
   const router = useRouter();
   console.log("running auth callback page after login");
+  const [isLoading, setIsLoading] = useState(false);
   const [configId, setConfigId] = useState<string | null>(null);
 
   useEffect(function () {
+    setIsLoading(true);
     const id = localStorage.getItem("configurationId");
-    if (id) setConfigId(id);
+    if (id) {
+      setConfigId(id);
+    }
+    setIsLoading(false);
   }, []);
 
-  if (!configId) return <Loading />;
+  if (isLoading && !configId) return <Loading />;
 
   if (configId) {
     localStorage.removeItem("configurationId");
