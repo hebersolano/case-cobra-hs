@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import pRetry, { AbortError } from "p-retry";
+import { Metadata } from "next";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -72,4 +73,36 @@ export function checkIsAdmin(roles: Roles): boolean {
   if (typeof roles.value === "object" && roles.value instanceof Array) {
     return roles.value.some((role) => role.key === "admin");
   } else return false;
+}
+
+type MetadataConstructor = {
+  title?: string;
+  description?: string;
+  image?: string;
+  icons?: string;
+};
+
+export function metadataConstructor({
+  title = "CaseCobra - Custom high quality phone cases",
+  description = "Create custom high-quality phone cases in seconds",
+  image = "/thumbnail.png",
+  icons = "/favicon.ico",
+}: MetadataConstructor = {}): Metadata {
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: [{ url: image }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [image],
+      // creator: "@nextjs",
+    },
+    icons,
+  };
 }
