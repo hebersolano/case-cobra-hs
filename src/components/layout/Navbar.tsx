@@ -1,13 +1,16 @@
+"use client";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import MaxWidthWrapper from "../MaxWidthWrapper";
 import { buttonVariants } from "../ui/button";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 
-async function Nabvar() {
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
-  const isAdmin = user?.email === process.env.ADMIN_EMAIL;
+function Nabvar() {
+  const { isAuthenticated, getUser } = useKindeBrowserClient();
+  const user = getUser();
+  const isAdmin = user?.email === "edilsonsolano1@gmail.com";
+  console.log(isAdmin, user);
 
   return (
     <nav className="sticky z-[55] h-14 inset-x-0 top-0 w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all">
@@ -18,7 +21,7 @@ async function Nabvar() {
           </Link>
 
           <div className="h-full flex items-center space-x-4">
-            {user ? (
+            {isAuthenticated ? (
               <>
                 <Link
                   href="/api/auth/logout"

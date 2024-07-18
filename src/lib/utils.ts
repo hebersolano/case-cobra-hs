@@ -104,5 +104,6 @@ export function metadataConstructor({
       // creator: "@nextjs",
     },
     icons,
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SERVER_URL!),
   };
 }
