@@ -5,7 +5,7 @@
   Capture your favorite memories with your own, <strong >one-of-one</strong> phone case. CaseCobra allows you to protect your memories, not just your phone
   </p>
 
-  <img src="" alt="logo" width="32px" height="auto">
+  <img src="public/snake-1.png" alt="logo" width="52px" height="auto">
 
   <br>
   
@@ -45,34 +45,66 @@
 
 ### Installation
 
+This project use `pnpm` package manager, if you want to use `npm` follow this instructions:
+
+1. Delete `node_modules` folder if already exists.
+2. Delete `pnpm_lock.yaml` file (this will be replaced by `package-lock.json`).
+3. Replace all pnpm calls to npm in `package.json`
+4. Run `npm install`
+
 - Clone this repo:
 
 ```sh
-git clone https://github.com/hebersolano/property-pulse.git
+git clone https://github.com/hebersolano/case-cobra-hs.git
 ```
 
 - Install dependencies:
 
 ```sh
-npm install
+pnpm install
 ```
 
 - Create a dev.local file with this variables:
 
 ```env
+NEXT_PUBLIC_SERVER_URL=http://localhost:3000
+NEXT_DEV_URL=http://localhost:3000
 
-```
+KINDE_CLIENT_ID=
+KINDE_CLIENT_SECRET=
+KINDE_ISSUER_URL=
+KINDE_SITE_URL=http://localhost:3000
+KINDE_POST_LOGOUT_REDIRECT_URL=http://localhost:3000
+KINDE_POST_LOGIN_REDIRECT_URL=http://localhost:3000/api/auth/success
 
-- Build command:
+KINDE_DOMAIN=
+KINDE_MANAGEMENT_CLIENT_ID=
+KINDE_MANAGEMENT_CLIENT_SECRET=
 
-```sh
-npm run build
+UPLOADTHING_SECRET=
+UPLOADTHING_APP_ID=
+# in production replace with actual url
+UPLOADTHING_URL=http://localhost:3000
+
+# postgresql database
+DATABASE_URL=
+
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+
+RESEND_API_KEY=
 ```
 
 - Live server:
 
 ```sh
 npm run dev
+```
+
+- Build command:
+
+```sh
+npm run build
 ```
 
 ### Author
@@ -94,4 +126,4 @@ Feel free to contact me with any questions or feedback!
 
 ### Acknowledgments
 
-This app was developed as part of the [Build a Complete E-Commerce Shop with Next.js 14, Tailwind, React | Full Course 2024](https://youtu.be/SG82Aqcaaa0?si=k6pEPV9ZSFVsRsIR). Special thanks to Brad for his exceptional teaching and guidance during the course.
+This app was developed as part of the [Build a Complete E-Commerce Shop with Next.js 14, Tailwind, React | Full Course 2024](https://youtu.be/SG82Aqcaaa0?si=k6pEPV9ZSFVsRsIR). Special thanks to Josh for his exceptional teaching and guidance during the course.
