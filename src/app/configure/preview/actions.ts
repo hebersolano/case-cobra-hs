@@ -6,6 +6,16 @@ import stripe from "@/lib/stripe";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { Order } from "@prisma/client";
 
+export async function getCaseConfiguration(id: string, userId: string) {
+  const configuration = await db.configuration.findUnique({
+    where: { id },
+  });
+
+  if (!configuration || !configuration?.croppedImgUrl) return false;
+
+  return configuration;
+}
+
 export async function createCheckoutSession({ configId }: { configId: string }) {
   const { getUser } = getKindeServerSession();
 

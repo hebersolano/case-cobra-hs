@@ -5,12 +5,11 @@ import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import MaxWidthWrapper from "../MaxWidthWrapper";
 import { buttonVariants } from "../ui/button";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { checkIsAdmin } from "@/lib/utils";
 
 function Nabvar() {
-  const { isAuthenticated, getUser } = useKindeBrowserClient();
-  const user = getUser();
-  const isAdmin = user?.email === "edilsonsolano1@gmail.com";
-  console.log(isAdmin, user);
+  const { isAuthenticated, getClaim } = useKindeBrowserClient();
+  const isAdmin = checkIsAdmin(getClaim("roles"));
 
   return (
     <nav className="sticky z-[55] h-14 inset-x-0 top-0 w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all">

@@ -6,30 +6,64 @@ import { cn, formatPrice } from "@/lib/utils";
 import { COLORS, FINISHES, MODELS } from "@/lib/validators/option-validator";
 import { Configuration } from "@prisma/client";
 import { ArrowRight, Check } from "lucide-react";
-import { useState, useTransition } from "react";
-import { createCheckoutSession } from "./actions";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, useTransition } from "react";
+import { createCheckoutSession, getCaseConfiguration } from "./actions";
+import { notFound, useRouter, useSearchParams } from "next/navigation";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import LoginModal from "@/components/LoginModal";
+import { isCuid } from "@paralleldrive/cuid2";
+import useSWR from "swr";
+import Loading from "@/components/Loading";
+import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/types";
 
-function DesignPreview({ userConfig }: { userConfig: Configuration }) {
+type User = {
+  id: string;
+  email: string | null;
+  given_name: string | null;
+  family_name: string | null;
+  picture: string | null;
+} | null;
+
+function DesignPreview() {
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+  if (!id || typeof id !== "string" || !isCuid(id)) notFound();
+
+  const { isAuthenticated, user, getUser, refreshData } = useKindeBrowserClient();
+
+  const {
+    data: userConfig,
+    error,
+    isLoading,
+  } = useSWR("case-configuration", getCaseConfiguration.bind(null, id), {
+    errorRetryInterval: 500,
+    errorRetryCount: 2,
+  });
+
   const router = useRouter();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
   const [isRedirecting, startRedirecting] = useTransition();
-  const { isAuthenticated, user } = useKindeBrowserClient();
 
-  async function handleCheckout() {
-    if (isAuthenticated && user?.id) {
-      const { url } = await createCheckoutSession({ configId: userConfig.id });
+  if (isLoading) return <Loading />;
+  if (error && userConfig === undefined)
+    throw new Error("Error fetching your configuration, try again");
+  if (userConfig === false) notFound();
+
+  const { id: configId, croppedImgUrl, color, model, finish, material } = userConfig!;
+
+  async function handleCheckout(getUser: () => KindeUser | null) {
+    let user = getUser();
+    console.log("hanldler user", user);
+    if (user?.id) {
+      const { url } = await createCheckoutSession({ configId });
       if (!url) throw new Error("Unable to redirect to Stripe");
       router.push(url);
     } else {
-      localStorage.setItem("configurationId", userConfig.id);
+      localStorage.setItem("configurationId", configId);
       setIsLoginModalOpen(true);
     }
   }
 
-  const { croppedImgUrl, color, model, finish, material } = userConfig;
   const caseColor = COLORS.find((supportedColors) => supportedColors.value === color);
   const phoneModel = MODELS.options.find(
     (supportedModels) => supportedModels.value === model
@@ -107,7 +141,7 @@ function DesignPreview({ userConfig }: { userConfig: Configuration }) {
 
           <div className="mt-8 flex justify-end pb-12">
             <Button
-              onClick={startRedirecting.bind(null, handleCheckout)}
+              onClick={() => startRedirecting(() => handleCheckout(getUser))}
               isLoading={isRedirecting}
               loadingText="redirecting..."
               disabled={isRedirecting}

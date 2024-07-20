@@ -9,7 +9,7 @@ import { formatPrice } from "@/lib/utils";
 function ThankYou({ orderId }: { orderId: string }) {
   const { data, error, isLoading } = useSWR("order", getPaymentStatus.bind(null, { orderId }), {
     errorRetryInterval: 500,
-    errorRetryCount: 2,
+    errorRetryCount: 3,
   });
 
   console.log("data", data, error, isLoading);

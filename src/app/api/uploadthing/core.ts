@@ -23,33 +23,37 @@ export const ourFileRouter = {
     .onUploadComplete(async ({ metadata, file }) => {
       const { configId, caseConfig } = metadata.input;
 
-      if (!configId) {
-        const buffer = await fetchImgBuffer(file.url);
-        const imgMetadata = await sharp(buffer).metadata();
-        const { width, height } = imgMetadata;
+      try {
+        if (!configId) {
+          const buffer = await fetchImgBuffer(file.url);
+          const imgMetadata = await sharp(buffer).metadata();
+          const { width, height } = imgMetadata;
 
-        const configuration = await db.configuration.create({
-          data: { imgUrl: file.url, height: height || 500, width: width || 500 },
-        });
+          const configuration = await db.configuration.create({
+            data: { imgUrl: file.url, height: height || 500, width: width || 500 },
+          });
 
-        return { configId: configuration.id };
-      } else {
-        const updatedConfiguration = await db.configuration.update({
-          where: {
-            id: configId,
-          },
-          data: {
-            croppedImgUrl: file.url,
-            color: caseConfig?.color.value,
-            model: caseConfig?.model.value!,
-            material: caseConfig?.material.value,
-            finish: caseConfig?.finish.value,
-          },
-        });
+          return { configId: configuration.id };
+        } else {
+          const updatedConfiguration = await db.configuration.update({
+            where: {
+              id: configId,
+            },
+            data: {
+              croppedImgUrl: file.url,
+              color: caseConfig?.color.value,
+              model: caseConfig?.model.value!,
+              material: caseConfig?.material.value,
+              finish: caseConfig?.finish.value,
+            },
+          });
 
-        return { configId: updatedConfiguration.id };
+          return { configId: updatedConfiguration.id };
+        }
+      } catch (error) {
+        console.log(error);
+        throw error;
       }
-
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
     }),
 } satisfies FileRouter;

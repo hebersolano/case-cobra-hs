@@ -8,7 +8,7 @@ export async function GET() {
     const { getUser } = getKindeServerSession();
 
     const user = await getUser();
-    if (!user || user == null || !user.id)
+    if (!user || user === null || !user.id)
       throw new Error("Something went wrong with authentication");
 
     const dbUser = await db.user.findUnique({
