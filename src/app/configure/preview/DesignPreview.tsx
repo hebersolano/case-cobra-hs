@@ -141,7 +141,7 @@ function DesignPreview() {
 
           <div className="mt-8 flex justify-end pb-12">
             <Button
-              onClick={() => startRedirecting(() => handleCheckout(getUser))}
+              onClick={startRedirecting.bind(null, () => handleCheckout(getUser))}
               isLoading={isRedirecting}
               loadingText="redirecting..."
               disabled={isRedirecting}

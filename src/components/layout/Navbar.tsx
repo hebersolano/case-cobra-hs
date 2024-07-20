@@ -1,11 +1,11 @@
 "use client";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import MaxWidthWrapper from "../MaxWidthWrapper";
 import { buttonVariants } from "../ui/button";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { checkIsAdmin } from "@/lib/utils";
+import { RegisterLink, LoginLink, LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
 
 function Nabvar() {
   const { isAuthenticated, getClaim } = useKindeBrowserClient();
@@ -22,12 +22,9 @@ function Nabvar() {
           <div className="h-full flex items-center space-x-4">
             {isAuthenticated ? (
               <>
-                <Link
-                  href="/api/auth/logout"
-                  className={buttonVariants({ size: "sm", variant: "ghost" })}
-                >
+                <LogoutLink className={buttonVariants({ size: "sm", variant: "ghost" })}>
                   Sign out
-                </Link>
+                </LogoutLink>
                 {isAdmin && (
                   <Link
                     href="/dashboard"
@@ -49,18 +46,12 @@ function Nabvar() {
               </>
             ) : (
               <>
-                <Link
-                  href="/api/auth/register"
-                  className={buttonVariants({ size: "sm", variant: "ghost" })}
-                >
+                <RegisterLink className={buttonVariants({ size: "sm", variant: "ghost" })}>
                   Sign up
-                </Link>
-                <Link
-                  href="/api/auth/login"
-                  className={buttonVariants({ size: "sm", variant: "ghost" })}
-                >
+                </RegisterLink>
+                <LoginLink className={buttonVariants({ size: "sm", variant: "ghost" })}>
                   Login
-                </Link>
+                </LoginLink>
 
                 <div className="h-8 w-px bg-zinc-200 hidden sm:block"></div>
 
