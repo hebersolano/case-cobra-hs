@@ -3,10 +3,9 @@ import Phone from "@/components/Phone";
 import { Button } from "@/components/ui/button";
 import { BASE_PRICE, PRODUCT_PRICE } from "@/config/products";
 import { cn, formatPrice } from "@/lib/utils";
-import { COLORS, FINISHES, MODELS } from "@/lib/validators/option-validator";
-import { Configuration } from "@prisma/client";
+import { COLORS, MODELS } from "@/lib/validators/option-validator";
 import { ArrowRight, Check } from "lucide-react";
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { createCheckoutSession, getCaseConfiguration } from "./actions";
 import { notFound, useRouter, useSearchParams } from "next/navigation";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
@@ -15,45 +14,43 @@ import { isCuid } from "@paralleldrive/cuid2";
 import useSWR from "swr";
 import Loading from "@/components/Loading";
 import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/types";
-
-type User = {
-  id: string;
-  email: string | null;
-  given_name: string | null;
-  family_name: string | null;
-  picture: string | null;
-} | null;
+import { toast } from "@/components/ui/use-toast";
 
 function DesignPreview() {
+  const router = useRouter();
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
+  const [isRedirecting, startRedirecting] = useTransition();
+
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   if (!id || typeof id !== "string" || !isCuid(id)) notFound();
 
-  const { isAuthenticated, user, getUser, refreshData } = useKindeBrowserClient();
+  const { getUser } = useKindeBrowserClient();
 
   const {
     data: userConfig,
     error,
     isLoading,
   } = useSWR("case-configuration", getCaseConfiguration.bind(null, id), {
-    errorRetryInterval: 500,
-    errorRetryCount: 2,
+    // errorRetryInterval: 500,
+    // errorRetryCount: 2,
+    onError: (e) =>
+      toast({
+        title: "Something went wrong",
+        description: e?.message || e,
+        variant: "destructive",
+      }),
   });
 
-  const router = useRouter();
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
-  const [isRedirecting, startRedirecting] = useTransition();
-
   if (isLoading) return <Loading />;
-  if (error && userConfig === undefined)
-    throw new Error("Error fetching your configuration, try again");
+  if (userConfig === undefined) notFound();
   if (userConfig === false) notFound();
 
   const { id: configId, croppedImgUrl, color, model, finish, material } = userConfig!;
 
   async function handleCheckout(getUser: () => KindeUser | null) {
     let user = getUser();
-    console.log("hanldler user", user);
+
     if (user?.id) {
       const { url } = await createCheckoutSession({ configId });
       if (!url) throw new Error("Unable to redirect to Stripe");

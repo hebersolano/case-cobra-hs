@@ -6,7 +6,7 @@ import stripe from "@/lib/stripe";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { Order } from "@prisma/client";
 
-export async function getCaseConfiguration(id: string, userId: string) {
+export async function getCaseConfiguration(id: string) {
   const configuration = await db.configuration.findUnique({
     where: { id },
   });

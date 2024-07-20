@@ -5,6 +5,7 @@ import { getPaymentStatus } from "./actions";
 import useSWR from "swr";
 import PhonePreview from "@/components/PhonePreview";
 import { formatPrice } from "@/lib/utils";
+import Loading from "@/components/Loading";
 
 function ThankYou({ orderId }: { orderId: string }) {
   const { data, error, isLoading } = useSWR("order", getPaymentStatus.bind(null, { orderId }), {
@@ -12,18 +13,8 @@ function ThankYou({ orderId }: { orderId: string }) {
     errorRetryCount: 3,
   });
 
-  console.log("data", data, error, isLoading);
-  const status = "";
-  if (data == undefined)
-    return (
-      <div className="w-full mt-24 flex justify-center">
-        <div className="flex flex-col items-center gap-2">
-          <Loader2 className="h-8 w-8 animate-spin text-zinc-50" />
-          <h3 className="font-semibold text-xl">Loading your order...</h3>
-          <p>This won&apos;t take long.</p>
-        </div>
-      </div>
-    );
+  if (data == undefined) return <Loading />;
+
   if (data === false)
     return (
       <div className="w-full mt-24 flex justify-center">

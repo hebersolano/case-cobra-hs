@@ -68,7 +68,7 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: DesignPageProps
       const configId = data.serverData.configId;
       router.push(`/configure/preview?id=${configId}`);
     },
-    onUploadError: (err) => {
+    onUploadError: () => {
       toast({
         title: "Something went wrong",
         description: "There was a problem saving your config, please try again.",
