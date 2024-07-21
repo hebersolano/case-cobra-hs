@@ -45,7 +45,6 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: DesignPageProps
   const container = containerRef.current?.getBoundingClientRect() || INIT_DIM;
   const leftOffset = phoneCaseRef.current ? phoneCase.left - container.left : 0;
   const topOffset = phoneCaseRef.current ? phoneCase.top - container.top : 0;
-  console.log(leftOffset, topOffset);
 
   const [options, setOptions] = useState<OptionsCaseT>({
     color: COLORS[0],
@@ -87,13 +86,9 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: DesignPageProps
   }
 
   async function saveConfiguration() {
-    console.log("saveConfig running");
     try {
       const actualX = renderedPosition.x ? renderedPosition.x - leftOffset : leftOffset;
       const actualY = renderedPosition.y ? renderedPosition.y - topOffset : topOffset;
-
-      console.log("case w", phoneCase.width, "case h", phoneCase.height);
-      console.log("actual x", actualX, "actual y", actualY);
 
       const canvas = document.createElement("canvas");
       canvas.width = phoneTemplate.width;
@@ -117,7 +112,6 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: DesignPageProps
 
       const dataURL = canvas.toDataURL("image/webp", 1);
       const file = await dataURLtoFile(dataURL, `canvas-${configId}.webp`);
-      console.log(file);
 
       await startUpload([file], {
         configId,

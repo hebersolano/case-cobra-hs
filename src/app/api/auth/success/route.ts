@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    console.log("running success route after login...");
     const { getUser } = getKindeServerSession();
 
     const user = await getUser();

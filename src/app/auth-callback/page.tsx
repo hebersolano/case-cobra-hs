@@ -6,8 +6,6 @@ import { useRouter } from "next/navigation";
 
 function AuthCallbackPage() {
   const router = useRouter();
-  console.log("running auth callback page after login");
-  // const [configId, setConfigId] = useState<string | null | boolean>(false);
 
   useEffect(
     function () {

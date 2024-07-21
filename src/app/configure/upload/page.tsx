@@ -24,7 +24,6 @@ function UploadPage() {
       });
     },
     onUploadProgress(p) {
-      console.log(p);
       setUploadProgress(p);
     },
   });

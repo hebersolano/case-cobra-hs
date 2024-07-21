@@ -26,7 +26,6 @@ export async function getPaymentStatus({ orderId }: { orderId: string }) {
 
     if (!order) return false;
 
-    console.log(order.isPaid);
     if (order.isPaid) return order;
     return false;
   } catch (error) {

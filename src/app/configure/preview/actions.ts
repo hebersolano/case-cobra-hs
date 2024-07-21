@@ -32,7 +32,6 @@ export async function createCheckoutSession({ configId }: { configId: string }) 
   let orderTotalPrice = BASE_PRICE;
   if (material === "polycarbonate") orderTotalPrice += PRODUCT_PRICE.material.polycarbonate;
   if (finish === "textured") orderTotalPrice += PRODUCT_PRICE.finish.textured;
-  console.log("order price", orderTotalPrice);
 
   let order: Order | undefined;
   const existingOrder = await db.order.findFirst({
@@ -55,7 +54,6 @@ export async function createCheckoutSession({ configId }: { configId: string }) 
       unit_amount: orderTotalPrice,
     },
   });
-  console.log("default price", products.default_price);
 
   const stripeSession = await stripe.checkout.sessions.create({
     success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/thank-you?orderId=${order.id}`,

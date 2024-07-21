@@ -26,12 +26,11 @@ export async function POST(req: Request, res: NextApiResponse) {
     );
 
     if (!event) throw new Error("Error verifying event");
-    console.log("webhook verified");
     // Handle the event
-    console.log(event.type);
     switch (event!.type) {
       case "checkout.session.completed": {
-        console.log(event.data.object);
+        console.log("handling: ", event.type);
+
         if (!event.data.object.customer_details?.email) throw new Error("missing user email");
         const checkoutSession = event.data.object as Stripe.Checkout.Session;
         if (!checkoutSession.metadata?.userId && !checkoutSession.metadata?.orderId)
