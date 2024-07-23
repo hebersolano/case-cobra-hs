@@ -1,30 +1,23 @@
 "use client";
-import { useRef, useState } from "react";
 import ImageNext from "next/image";
+import { useRef, useState } from "react";
 
-import { Rnd } from "react-rnd";
-import { Description, Radio, RadioGroup, Label as RGLabel } from "@headlessui/react";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Label } from "@/components/ui/label";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Check, ChevronsUpDown } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { Rnd } from "react-rnd";
+
+import HandleComponent from "@/components/HandleComponent";
+import { useToast } from "@/components/ui/use-toast";
+import { useUploadThing } from "@/lib/uploadthing";
+import { useRouter } from "next/navigation";
 
 import phoneTemplate from "@/../public/phone-template.png";
-import { cn, dataURLtoFile, formatPrice } from "@/lib/utils";
-import HandleComponent from "@/components/HandleComponent";
 import { BASE_PRICE } from "@/config/products";
-import { COLORS, FINISHES, MATERIALS, MODELS } from "@/lib/validators/option-validator";
-import { useUploadThing } from "@/lib/uploadthing";
-import { useToast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
 import { DesignPageProps, OptionsCaseT } from "@/lib/types";
+import { cn, dataURLtoFile, formatPrice } from "@/lib/utils";
+import { COLORS, FINISHES, MATERIALS, MODELS } from "@/lib/validators/option-validator";
+import ConfigurationForm from "./ConfigurationForm";
 
 const INIT_DIM = {
   left: 0,
@@ -36,15 +29,6 @@ const INIT_DIM = {
 function DesignConfiguration({ configId, imgUrl, imgDimension }: DesignPageProps) {
   const { toast } = useToast();
   const router = useRouter();
-
-  const phoneCaseRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const canvasDivRef = useRef<HTMLDivElement>(null);
-
-  const phoneCase = phoneCaseRef.current?.getBoundingClientRect() || INIT_DIM;
-  const container = containerRef.current?.getBoundingClientRect() || INIT_DIM;
-  const leftOffset = phoneCaseRef.current ? phoneCase.left - container.left : 0;
-  const topOffset = phoneCaseRef.current ? phoneCase.top - container.top : 0;
 
   const [options, setOptions] = useState<OptionsCaseT>({
     color: COLORS[0],
@@ -61,6 +45,14 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: DesignPageProps
     x: 0,
     y: 0,
   });
+
+  const phoneCaseRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const phoneCase = phoneCaseRef.current?.getBoundingClientRect() || INIT_DIM;
+  const container = containerRef.current?.getBoundingClientRect() || INIT_DIM;
+  const leftOffset = phoneCaseRef.current ? phoneCase.left - container.left : 0;
+  const topOffset = phoneCaseRef.current ? phoneCase.top - container.top : 0;
 
   const { startUpload, isUploading } = useUploadThing("imageUploader", {
     onClientUploadComplete: ([data]) => {
@@ -190,139 +182,7 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: DesignPageProps
       </div>
 
       <div className="h-[37.5rem] w-full col-span-full lg:col-span-1 flex flex-col bg-white">
-        <ScrollArea className="relative flex-1 overflow-auto">
-          <div
-            aria-hidden="true"
-            className="absolute z-10 inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white pointer-events-none"
-          />
-
-          <div className="px-8 pb-12 pt-8">
-            <h2 className="tracking-tight font-bold text-3xl ">customize your case</h2>
-
-            <div className="w-full h-px bg-zinc-200 my-6" />
-
-            <div className="relative mt-4 h-full flex flex-col justify-between">
-              <div className="flex flex-col gap-6">
-                <RadioGroup
-                  value={options.color}
-                  onChange={(val) => {
-                    setOptions((prev) => ({ ...prev, color: val }));
-                  }}
-                >
-                  <RGLabel>Color: {options.color.label}</RGLabel>
-                  <div className="mt-3 flex items-center space-x-3">
-                    {COLORS.map((color) => (
-                      <Radio
-                        key={color.label}
-                        value={color}
-                        className={({ checked }) =>
-                          cn(
-                            "relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 active:ring-0 focus:ring-0 active:outline-none border-2 border-transparent",
-                            {
-                              [`border-${color.tw}`]: checked,
-                            }
-                          )
-                        }
-                      >
-                        <span
-                          className={cn(
-                            `bg-${color.tw}`,
-                            "h-8 w-8 rounded-full border border-black border-opacity-10"
-                          )}
-                        />
-                      </Radio>
-                    ))}
-                  </div>
-                </RadioGroup>
-                <div className="relative flex flex-col gap-3 w-full">
-                  <Label>Model</Label>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        className="w-full jus\
-                      "
-                      >
-                        {options.model.label}
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50 " />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      {MODELS.options.map((model) => (
-                        <DropdownMenuItem
-                          key={model.label}
-                          className={cn(
-                            "flex text-sm gap-1 items-center p-1.5 cursor-default hover:bg-zinc-100",
-                            { "bg-zinc-100": model.label === options.model.label }
-                          )}
-                          onClick={() => setOptions((prev) => ({ ...prev, model }))}
-                        >
-                          {
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4 opacity-0",
-                                model.label === options.model.label && "opacity-100"
-                              )}
-                            />
-                          }
-                          {model.label}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-
-                {[MATERIALS, FINISHES].map(({ name, options: selectableOpts }) => (
-                  <RadioGroup
-                    key={name}
-                    value={options[name]}
-                    onChange={(val) => setOptions((prev) => ({ ...prev, [name]: val }))}
-                  >
-                    <Label>{name.slice(0, 1).toUpperCase() + name.slice(1)}</Label>
-                    <div className="mt-3 space-y-4">
-                      {selectableOpts.map((option) => (
-                        <Radio
-                          key={option.value}
-                          value={option}
-                          className={({ checked }) => {
-                            return cn(
-                              "relative block cursor-pointer rounded-lg bg-white px-6 py-4 shadow-sm border-2 border-zinc-200 focus:outline-none ring-0 focus:ring-0 outline-none sm:flex sm:justify-between",
-                              { "border-primary": checked }
-                            );
-                          }}
-                        >
-                          <span className="flex items-center">
-                            <span className="flex flex-col text-sm ">
-                              <RGLabel className="font-medium text-gray-900 " as="span">
-                                {option.label}
-                              </RGLabel>
-
-                              {option.description && (
-                                <Description className="text-gray-500" as="span">
-                                  <span className="block sm:inline">{option.description}</span>
-                                </Description>
-                              )}
-                            </span>
-                          </span>
-
-                          <Description
-                            as="span"
-                            className="mt-2 flex text-sm sm:ml-4 sm:mt-0 sm:flex-col sm:text-right"
-                          >
-                            <span className="font-medium text-gray-900">
-                              {formatPrice(option.price)}
-                            </span>
-                          </Description>
-                        </Radio>
-                      ))}
-                    </div>
-                  </RadioGroup>
-                ))}
-              </div>
-            </div>
-          </div>
-        </ScrollArea>
+        <ConfigurationForm options={options} setOptions={setOptions} />
 
         <div className="w-full px-8 h-16 bg-white">
           <div className="h-px w-full bg-zinc-200" />
@@ -346,7 +206,6 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: DesignPageProps
           </div>
         </div>
       </div>
-      <div id="canvasDiv" ref={canvasDivRef}></div>
     </div>
   );
 }
