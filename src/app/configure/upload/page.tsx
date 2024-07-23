@@ -8,6 +8,7 @@ import { useState, useTransition } from "react";
 import Dropzone, { FileRejection } from "react-dropzone";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import { PHONE_CASE } from "@/lib/validators/option-validator";
 
 function UploadPage() {
   const { toast } = useToast();
@@ -41,7 +42,11 @@ function UploadPage() {
   }
 
   function dropAcceptedHandler(acceptedFiles: File[]) {
-    startUpload(acceptedFiles, { configId: undefined });
+    // TODO: get the files dimensions
+    startUpload(acceptedFiles, {
+      configId: undefined,
+      imgDimensions: { width: PHONE_CASE.width, height: PHONE_CASE.height },
+    });
     setIsDrayOver(false);
   }
 

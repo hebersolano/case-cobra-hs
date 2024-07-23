@@ -3,6 +3,8 @@
 
 import { PRODUCT_PRICE } from "@/config/products";
 
+export const PHONE_CASE = { width: 896, height: 1831 };
+
 // bg-rose-950 border-rose-950
 export const COLORS = [
   { label: "Black", value: "black", tw: "zinc-900" },

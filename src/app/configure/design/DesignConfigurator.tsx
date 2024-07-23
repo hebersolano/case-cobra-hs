@@ -69,10 +69,11 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: DesignPageProps
   });
 
   function updateInitCoors() {
-    // calc new width if height of img fit case
+    // calculate the width so the user’s image’s height fits the case’s height
     const imgWidth = (phoneCase.height * imgDimension.width) / imgDimension.height;
-    // calc img x coord to center img in case
+    // calculate img x coord to center img in case
     const imgCenterX = leftOffset + phoneCase.width / 2 - imgWidth / 2;
+
     setRenderedPosition({ x: imgCenterX, y: topOffset });
     setRenderedDim({ width: imgWidth, height: phoneCase.height });
   }
@@ -91,6 +92,7 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: DesignPageProps
       userImg.crossOrigin = "anonymous";
       userImg.src = imgUrl;
       await new Promise((resolve) => (userImg.onload = resolve));
+
       // rescale units to create a img with better resolution
       const scale = phoneTemplate.width / phoneCase.width;
 

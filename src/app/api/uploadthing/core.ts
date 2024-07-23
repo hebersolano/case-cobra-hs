@@ -4,30 +4,38 @@ import sharp from "sharp";
 import db from "@/db";
 import { fetchImgBuffer } from "@/lib/utils";
 import { OptionsCaseT } from "@/lib/types";
+import { readFile, readFileSync } from "fs";
 
 const f = createUploadthing();
 
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
-  imageUploader: f({ image: { maxFileSize: "4MB" } })
+  imageUploader: f({ image: { maxFileSize: "4MB", maxFileCount: 1, minFileCount: 1 } })
     .input(
       z.object({
         configId: z.string().optional(),
         caseConfig: z.custom<OptionsCaseT>().optional(),
+        imgDimensions: z
+          .object({
+            width: z.number(),
+            height: z.number(),
+          })
+          .optional(),
       })
     )
-    .middleware(async ({ input }) => {
+    .middleware(async ({ input, files }) => {
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
       return { input };
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      const { configId, caseConfig } = metadata.input;
+      const { configId, caseConfig, imgDimensions } = metadata.input;
 
       try {
         if (!configId) {
-          const buffer = await fetchImgBuffer(file.url);
-          const imgMetadata = await sharp(buffer).metadata();
-          const { width, height } = imgMetadata;
+          // const buffer = await fetchImgBuffer(file.url);
+          // const imgMetadata = await sharp(buffer).metadata();
+          const { width, height } = imgDimensions!;
+          console.log("new imgDim", imgDimensions);
 
           const configuration = await db.configuration.create({
             data: { imgUrl: file.url, height: height || 500, width: width || 500 },
@@ -54,7 +62,7 @@ export const ourFileRouter = {
         console.log(error);
         throw error;
       }
-      // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
+      // ! Whatever is returned here is sent to the client-side `onClientUploadComplete` callback
     }),
 } satisfies FileRouter;
 

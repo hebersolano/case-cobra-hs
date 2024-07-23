@@ -1,7 +1,8 @@
 import db from "@/db";
-import { isCuid } from "@paralleldrive/cuid2";
 import { notFound } from "next/navigation";
 import DesignConfiguration from "./DesignConfigurator";
+import isValidId from "@/lib/validators/is-valid-id";
+import getCaseConfiguration from "@/data-access/get-case-configuration";
 
 interface PageProps {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -9,12 +10,9 @@ interface PageProps {
 
 async function page({ searchParams }: PageProps) {
   const { id } = searchParams;
-  if (!id || typeof id !== "string" || !isCuid(id)) notFound();
+  if (!id || typeof id !== "string" || !isValidId(id)) notFound();
 
-  const configuration = await db.configuration.findUnique({
-    where: { id },
-  });
-
+  const configuration = await getCaseConfiguration(id);
   if (!configuration) notFound();
 
   const { imgUrl, width, height } = configuration;
