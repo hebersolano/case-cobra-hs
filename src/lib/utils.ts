@@ -107,3 +107,35 @@ export function metadataConstructor({
     metadataBase: new URL(process.env.NEXT_PUBLIC_SERVER_URL!),
   };
 }
+
+// export async function getDimensionsFromImgFile(imgFile: File) {
+//   const imgArrBuffer = await imgFile.arrayBuffer();
+//   const imgMetadata = await sharp(imgArrBuffer).metadata();
+//   if (!imgMetadata.width || !imgMetadata.height) throw new Error("Error processing image data");
+//   return { width: imgMetadata.width, height: imgMetadata.height };
+// }
+
+export function getDimensionsFromImgFile(
+  imgFile: File
+): Promise<{ width: number; height: number }> {
+  return new Promise((resolve, reject) => {
+    try {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const imgDataURL = event?.target?.result;
+
+        const userImg = new Image();
+        userImg.crossOrigin = "anonymous";
+        userImg.src = imgDataURL as string;
+        userImg.onload = (event) => {
+          const imgElement = event.target as HTMLImageElement;
+
+          resolve({ width: imgElement.naturalWidth, height: imgElement.naturalHeight });
+        };
+      };
+      reader.readAsDataURL(imgFile);
+    } catch (error) {
+      resolve({ width: 0, height: 0 });
+    }
+  });
+}

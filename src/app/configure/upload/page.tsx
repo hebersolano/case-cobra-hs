@@ -2,7 +2,7 @@
 
 import { Progress } from "@/components/ui/progress";
 import { useUploadThing } from "@/lib/uploadthing";
-import { cn } from "@/lib/utils";
+import { cn, getDimensionsFromImgFile } from "@/lib/utils";
 import { ImageDown, Loader2, MousePointerSquareDashed } from "lucide-react";
 import { useState, useTransition } from "react";
 import Dropzone, { FileRejection } from "react-dropzone";
@@ -41,13 +41,26 @@ function UploadPage() {
     });
   }
 
-  function dropAcceptedHandler(acceptedFiles: File[]) {
-    // TODO: get the files dimensions
-    startUpload(acceptedFiles, {
-      configId: undefined,
-      imgDimensions: { width: PHONE_CASE.width, height: PHONE_CASE.height },
-    });
-    setIsDrayOver(false);
+  async function dropAcceptedHandler(acceptedFiles: File[]) {
+    try {
+      let imgDimensions;
+      imgDimensions = await getDimensionsFromImgFile(acceptedFiles[0]);
+      if (!imgDimensions.width || !imgDimensions.height) throw new Error();
+      console.log(imgDimensions);
+
+      startUpload(acceptedFiles, {
+        configId: undefined,
+        imgDimensions,
+      });
+      setIsDrayOver(false);
+    } catch (error) {
+      if (error instanceof Error)
+        toast({
+          title: `Error processing ${acceptedFiles[0].name}`,
+          description: "Cannot get require dimensions",
+          variant: "destructive",
+        });
+    }
   }
 
   return (
@@ -61,6 +74,7 @@ function UploadPage() {
     >
       <div className="relative flex flex-1 flex-col items-center justify-center w-full">
         <Dropzone
+          maxFiles={1}
           onDropAccepted={dropAcceptedHandler}
           onDropRejected={dropRejectedHandler}
           accept={{
