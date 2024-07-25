@@ -1,39 +1,37 @@
 "use client";
+import Loading from "@/components/Loading";
+import LoginModal from "@/components/LoginModal";
 import Phone from "@/components/Phone";
 import { Button } from "@/components/ui/button";
-import { BASE_PRICE, PRODUCT_PRICE } from "@/config/products";
-import { cn, formatPrice } from "@/lib/utils";
-import { COLORS, MODELS } from "@/lib/validators/option-validator";
-import { ArrowRight, Check } from "lucide-react";
-import { useState, useTransition } from "react";
-import { createCheckoutSession, getCaseConfiguration } from "./actions";
-import { notFound, useRouter, useSearchParams } from "next/navigation";
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
-import LoginModal from "@/components/LoginModal";
-import { isCuid } from "@paralleldrive/cuid2";
-import useSWR from "swr";
-import Loading from "@/components/Loading";
-import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/types";
 import { toast } from "@/components/ui/use-toast";
+import { BASE_PRICE, PRODUCT_PRICE } from "@/config/products";
+import { cn, formatPrice, isValidId } from "@/lib/utils";
+import { COLORS, MODELS } from "@/lib/validators/option-validator";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/types";
+import { ArrowRight, Check } from "lucide-react";
+import { notFound, useRouter, useSearchParams } from "next/navigation";
+import { useState, useTransition } from "react";
+import useSWR from "swr";
+import { createCheckoutSessionAction, getCaseConfigurationAction } from "./actions";
 
 function DesignPreview() {
   const router = useRouter();
+  const { getUser } = useKindeBrowserClient();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
   const [isRedirecting, startRedirecting] = useTransition();
 
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
-  if (!id || typeof id !== "string" || !isCuid(id)) notFound();
-
-  const { getUser } = useKindeBrowserClient();
+  if (!id || typeof id !== "string" || !isValidId(id)) notFound();
 
   const {
     data: userConfig,
     error,
     isLoading,
-  } = useSWR("case-configuration", getCaseConfiguration.bind(null, id), {
-    // errorRetryInterval: 500,
-    // errorRetryCount: 2,
+  } = useSWR("case-configuration", getCaseConfigurationAction.bind(null, id!), {
+    errorRetryInterval: 500,
+    errorRetryCount: 2,
     onError: (e) =>
       toast({
         title: "Something went wrong",
@@ -42,8 +40,7 @@ function DesignPreview() {
       }),
   });
 
-  if (isLoading) return <Loading />;
-  if (userConfig === undefined) notFound();
+  if (isLoading && userConfig === undefined) return <Loading />;
   if (userConfig === false) notFound();
 
   const { id: configId, croppedImgUrl, color, model, finish, material } = userConfig!;
@@ -52,7 +49,7 @@ function DesignPreview() {
     let user = getUser();
 
     if (user?.id) {
-      const { url } = await createCheckoutSession({ configId });
+      const { url } = await createCheckoutSessionAction({ configId });
       if (!url) throw new Error("Unable to redirect to Stripe");
       router.push(url);
     } else {

@@ -78,7 +78,7 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: DesignPageProps
     setRenderedDim({ width: imgWidth, height: phoneCase.height });
   }
 
-  async function saveConfiguration() {
+  async function saveCaseImgConfiguration() {
     try {
       const actualX = renderedPosition.x ? renderedPosition.x - leftOffset : leftOffset;
       const actualY = renderedPosition.y ? renderedPosition.y - topOffset : topOffset;
@@ -93,7 +93,7 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: DesignPageProps
       userImg.src = imgUrl;
       await new Promise((resolve) => (userImg.onload = resolve));
 
-      // rescale units to create a img with better resolution
+      // rescale units to create a img with phoneTemplate's width better resolution
       const scale = phoneTemplate.width / phoneCase.width;
 
       ctx?.drawImage(
@@ -194,7 +194,7 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: DesignPageProps
                 {formatPrice(BASE_PRICE + options.finish.price + options.material.price)}
               </p>
               <Button
-                onClick={saveConfiguration}
+                onClick={saveCaseImgConfiguration}
                 className="w-full"
                 size="sm"
                 isLoading={isUploading}

@@ -2,6 +2,9 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import pRetry, { AbortError } from "p-retry";
 import { Metadata } from "next";
+import { isCuid } from "@paralleldrive/cuid2";
+import { Configuration } from "@prisma/client";
+import { BASE_PRICE, PRODUCT_PRICE } from "@/config/products";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -118,7 +121,7 @@ export function metadataConstructor({
 export function getDimensionsFromImgFile(
   imgFile: File
 ): Promise<{ width: number; height: number }> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     try {
       const reader = new FileReader();
       reader.onload = (event) => {
@@ -134,8 +137,21 @@ export function getDimensionsFromImgFile(
         };
       };
       reader.readAsDataURL(imgFile);
-    } catch (error) {
+    } catch {
       resolve({ width: 0, height: 0 });
     }
   });
+}
+
+export function isValidId(id: string): boolean {
+  return isCuid(id);
+}
+
+export function getOrderPrice(caseConfiguration: Configuration) {
+  const { finish, material } = caseConfiguration;
+  let orderTotalPrice = BASE_PRICE;
+  if (material === "polycarbonate") orderTotalPrice += PRODUCT_PRICE.material.polycarbonate;
+  if (finish === "textured") orderTotalPrice += PRODUCT_PRICE.finish.textured;
+
+  return orderTotalPrice;
 }

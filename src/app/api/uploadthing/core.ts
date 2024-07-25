@@ -1,10 +1,7 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { z } from "zod";
-import sharp from "sharp";
 import db from "@/db";
-import { fetchImgBuffer } from "@/lib/utils";
 import { OptionsCaseT } from "@/lib/types";
-import { readFile, readFileSync } from "fs";
 
 const f = createUploadthing();
 
@@ -35,7 +32,6 @@ export const ourFileRouter = {
           // const buffer = await fetchImgBuffer(file.url);
           // const imgMetadata = await sharp(buffer).metadata();
           const { width, height } = imgDimensions!;
-          console.log("new imgDim", imgDimensions);
 
           const configuration = await db.configuration.create({
             data: { imgUrl: file.url, height: height || 500, width: width || 500 },

@@ -1,8 +1,8 @@
 import db from "@/db";
 import { notFound } from "next/navigation";
 import DesignConfiguration from "./DesignConfigurator";
-import isValidId from "@/lib/validators/is-valid-id";
-import getCaseConfiguration from "@/data-access/get-case-configuration";
+import { isValidId } from "@/lib/utils";
+import getCaseConfiguration from "@/data-access/get-case-configuration-DA";
 
 interface PageProps {
   searchParams: { [key: string]: string | string[] | undefined };

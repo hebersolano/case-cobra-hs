@@ -8,7 +8,6 @@ import { useState, useTransition } from "react";
 import Dropzone, { FileRejection } from "react-dropzone";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
-import { PHONE_CASE } from "@/lib/validators/option-validator";
 
 function UploadPage() {
   const { toast } = useToast();
@@ -36,30 +35,27 @@ function UploadPage() {
 
     toast({
       title: `${file.file.type} type is not supported`,
-      description: "Please choose a PNG, JPG, OR JPEG image instead",
+      description: "Please choose a PNG, JPG, JPEG or WEBP image instead",
       variant: "destructive",
     });
   }
 
   async function dropAcceptedHandler(acceptedFiles: File[]) {
     try {
-      let imgDimensions;
-      imgDimensions = await getDimensionsFromImgFile(acceptedFiles[0]);
+      const imgDimensions = await getDimensionsFromImgFile(acceptedFiles[0]);
       if (!imgDimensions.width || !imgDimensions.height) throw new Error();
-      console.log(imgDimensions);
 
       startUpload(acceptedFiles, {
         configId: undefined,
         imgDimensions,
       });
       setIsDrayOver(false);
-    } catch (error) {
-      if (error instanceof Error)
-        toast({
-          title: `Error processing ${acceptedFiles[0].name}`,
-          description: "Cannot get require dimensions",
-          variant: "destructive",
-        });
+    } catch {
+      toast({
+        title: `Error processing ${acceptedFiles[0].name} image`,
+        description: "Please try later o try another image",
+        variant: "destructive",
+      });
     }
   }
 
