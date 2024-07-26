@@ -1,58 +1,57 @@
 "use client";
+import Loading from "@/components/Loading";
+import LoginModal from "@/components/LoginModal";
 import Phone from "@/components/Phone";
 import { Button } from "@/components/ui/button";
-import { BASE_PRICE, PRODUCT_PRICE } from "@/config/products";
-import { cn, formatPrice } from "@/lib/utils";
-import { COLORS, MODELS } from "@/lib/validators/option-validator";
-import { ArrowRight, Check } from "lucide-react";
-import { useState, useTransition } from "react";
-import { createCheckoutSession, getCaseConfiguration } from "./actions";
-import { notFound, useRouter, useSearchParams } from "next/navigation";
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
-import LoginModal from "@/components/LoginModal";
-import { isCuid } from "@paralleldrive/cuid2";
-import useSWR from "swr";
-import Loading from "@/components/Loading";
-import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/types";
 import { toast } from "@/components/ui/use-toast";
+import { BASE_PRICE, PRODUCT_PRICE } from "@/config/products";
+import { cn, formatPrice, getCaseConfigLabels, getOrderPrice, isValidId } from "@/lib/utils";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { ArrowRight, Check } from "lucide-react";
+import { notFound, useRouter, useSearchParams } from "next/navigation";
+import { useState, useTransition } from "react";
+import useSWR from "swr";
+import { createCheckoutSessionAction, getCaseConfigurationAction } from "./actions";
 
 function DesignPreview() {
   const router = useRouter();
+  const { getUser } = useKindeBrowserClient();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
   const [isRedirecting, startRedirecting] = useTransition();
 
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
-  if (!id || typeof id !== "string" || !isCuid(id)) notFound();
+  if (!id || typeof id !== "string" || !isValidId(id)) notFound();
 
-  const { getUser } = useKindeBrowserClient();
+  const { data: userCaseConfig, isLoading } = useSWR(
+    "case-configuration",
+    getCaseConfigurationAction.bind(null, id!),
+    {
+      errorRetryInterval: 500,
+      errorRetryCount: 2,
+      onError: (e) =>
+        toast({
+          title: "Something went wrong",
+          description: e?.message || e,
+          variant: "destructive",
+        }),
+    }
+  );
 
-  const {
-    data: userConfig,
-    error,
-    isLoading,
-  } = useSWR("case-configuration", getCaseConfiguration.bind(null, id), {
-    // errorRetryInterval: 500,
-    // errorRetryCount: 2,
-    onError: (e) =>
-      toast({
-        title: "Something went wrong",
-        description: e?.message || e,
-        variant: "destructive",
-      }),
-  });
+  if (isLoading && userCaseConfig === undefined) return <Loading />;
+  if (userCaseConfig === false) notFound();
 
-  if (isLoading) return <Loading />;
-  if (userConfig === undefined) notFound();
-  if (userConfig === false) notFound();
+  const { id: configId, croppedImgUrl, finish, material } = userCaseConfig!;
 
-  const { id: configId, croppedImgUrl, color, model, finish, material } = userConfig!;
+  const { caseColor, phoneModel } = getCaseConfigLabels(userCaseConfig!);
 
-  async function handleCheckout(getUser: () => KindeUser | null) {
-    let user = getUser();
+  const orderPrice = getOrderPrice(userCaseConfig!);
+
+  async function handleCheckout() {
+    const user = getUser();
 
     if (user?.id) {
-      const { url } = await createCheckoutSession({ configId });
+      const { url } = await createCheckoutSessionAction({ configId });
       if (!url) throw new Error("Unable to redirect to Stripe");
       router.push(url);
     } else {
@@ -60,15 +59,6 @@ function DesignPreview() {
       setIsLoginModalOpen(true);
     }
   }
-
-  const caseColor = COLORS.find((supportedColors) => supportedColors.value === color);
-  const phoneModel = MODELS.options.find(
-    (supportedModels) => supportedModels.value === model
-  )?.label;
-
-  let orderTotalPrice = BASE_PRICE;
-  if (material === "polycarbonate") orderTotalPrice += PRODUCT_PRICE.material.polycarbonate;
-  if (finish === "textured") orderTotalPrice += PRODUCT_PRICE.finish.textured;
 
   return (
     <div className="mt-20 flex flex-col items-center md:grid text-sm sm:grid-cols-12 sm:grid-rows-1 sm:gap-x-6 md:gap-x-8 lg:gap-x-12">
@@ -118,6 +108,15 @@ function DesignPreview() {
                 <p className="font-medium text-gray-900"> {formatPrice(BASE_PRICE)}</p>
               </div>
 
+              {material === "polycarbonate" && (
+                <div className="flex items-center justify-between py-1 mt-2">
+                  <p className="text-gray-600 ">Soft polycarbonate material: &nbsp; </p>
+                  <p className="font-medium text-gray-900">
+                    {formatPrice(PRODUCT_PRICE.material.polycarbonate)}
+                  </p>
+                </div>
+              )}
+
               {finish === "textured" && (
                 <div className="flex items-center justify-between py-1 mt-2">
                   <p className="text-gray-600 ">Textured finish: &nbsp; </p>
@@ -131,14 +130,14 @@ function DesignPreview() {
 
               <div className="flex items-center justify-between py-2">
                 <p className="font-semibold text-gray-900">Order total</p>
-                <p className="font-semibold text-gray-900">{formatPrice(orderTotalPrice)}</p>
+                <p className="font-semibold text-gray-900">{formatPrice(orderPrice)}</p>
               </div>
             </div>
           </div>
 
           <div className="mt-8 flex justify-end pb-12">
             <Button
-              onClick={startRedirecting.bind(null, () => handleCheckout(getUser))}
+              onClick={startRedirecting.bind(null, handleCheckout)}
               isLoading={isRedirecting}
               loadingText="redirecting..."
               disabled={isRedirecting}

@@ -67,6 +67,7 @@ function ConfigurationForm({ options, setOptions }: configFormProps) {
             </RadioGroup>
             <div className="relative flex flex-col gap-3 w-full">
               <Label>Model</Label>
+
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -79,6 +80,7 @@ function ConfigurationForm({ options, setOptions }: configFormProps) {
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50 " />
                   </Button>
                 </DropdownMenuTrigger>
+
                 <DropdownMenuContent>
                   {MODELS.options.map((model) => (
                     <DropdownMenuItem

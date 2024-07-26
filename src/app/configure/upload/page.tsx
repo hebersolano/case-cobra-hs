@@ -2,7 +2,7 @@
 
 import { Progress } from "@/components/ui/progress";
 import { useUploadThing } from "@/lib/uploadthing";
-import { cn } from "@/lib/utils";
+import { cn, getDimensionsFromImgFile } from "@/lib/utils";
 import { ImageDown, Loader2, MousePointerSquareDashed } from "lucide-react";
 import { useState, useTransition } from "react";
 import Dropzone, { FileRejection } from "react-dropzone";
@@ -35,14 +35,27 @@ function UploadPage() {
 
     toast({
       title: `${file.file.type} type is not supported`,
-      description: "Please choose a PNG, JPG, OR JPEG image instead",
+      description: "Please choose a PNG, JPG, JPEG or WEBP image instead",
       variant: "destructive",
     });
   }
 
-  function dropAcceptedHandler(acceptedFiles: File[]) {
-    startUpload(acceptedFiles, { configId: undefined });
-    setIsDrayOver(false);
+  async function dropAcceptedHandler(acceptedFiles: File[]) {
+    try {
+      const imgDimensions = await getDimensionsFromImgFile(acceptedFiles[0]);
+      if (!imgDimensions.width || !imgDimensions.height) throw new Error();
+
+      startUpload(acceptedFiles, {
+        imgDimensions,
+      });
+      setIsDrayOver(false);
+    } catch {
+      toast({
+        title: `Error processing ${acceptedFiles[0].name} image`,
+        description: "Please try later o try another image",
+        variant: "destructive",
+      });
+    }
   }
 
   return (
@@ -56,6 +69,7 @@ function UploadPage() {
     >
       <div className="relative flex flex-1 flex-col items-center justify-center w-full">
         <Dropzone
+          maxFiles={1}
           onDropAccepted={dropAcceptedHandler}
           onDropRejected={dropRejectedHandler}
           accept={{

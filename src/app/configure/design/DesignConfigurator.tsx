@@ -54,7 +54,7 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: DesignPageProps
   const leftOffset = phoneCaseRef.current ? phoneCase.left - container.left : 0;
   const topOffset = phoneCaseRef.current ? phoneCase.top - container.top : 0;
 
-  const { startUpload, isUploading } = useUploadThing("imageUploader", {
+  const { startUpload, isUploading } = useUploadThing("croppedImgUploader", {
     onClientUploadComplete: ([data]) => {
       const configId = data.serverData.configId;
       router.push(`/configure/preview?id=${configId}`);
@@ -69,15 +69,16 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: DesignPageProps
   });
 
   function updateInitCoors() {
-    // calc new width if height of img fit case
+    // calculate the width so the user’s image’s height fits the case’s height
     const imgWidth = (phoneCase.height * imgDimension.width) / imgDimension.height;
-    // calc img x coord to center img in case
+    // calculate img x coord to center img in case
     const imgCenterX = leftOffset + phoneCase.width / 2 - imgWidth / 2;
+
     setRenderedPosition({ x: imgCenterX, y: topOffset });
     setRenderedDim({ width: imgWidth, height: phoneCase.height });
   }
 
-  async function saveConfiguration() {
+  async function saveCaseImgConfiguration() {
     try {
       const actualX = renderedPosition.x ? renderedPosition.x - leftOffset : leftOffset;
       const actualY = renderedPosition.y ? renderedPosition.y - topOffset : topOffset;
@@ -91,7 +92,8 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: DesignPageProps
       userImg.crossOrigin = "anonymous";
       userImg.src = imgUrl;
       await new Promise((resolve) => (userImg.onload = resolve));
-      // rescale units to create a img with better resolution
+
+      // rescale units to create a img with phoneTemplate's width better resolution
       const scale = phoneTemplate.width / phoneCase.width;
 
       ctx?.drawImage(
@@ -192,7 +194,7 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: DesignPageProps
                 {formatPrice(BASE_PRICE + options.finish.price + options.material.price)}
               </p>
               <Button
-                onClick={saveConfiguration}
+                onClick={saveCaseImgConfiguration}
                 className="w-full"
                 size="sm"
                 isLoading={isUploading}

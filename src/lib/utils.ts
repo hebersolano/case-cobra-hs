@@ -2,6 +2,10 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import pRetry, { AbortError } from "p-retry";
 import { Metadata } from "next";
+import { isCuid } from "@paralleldrive/cuid2";
+import { Configuration } from "@prisma/client";
+import { BASE_PRICE, PRODUCT_PRICE } from "@/config/products";
+import { COLORS, MODELS } from "./validators/option-validator";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -106,4 +110,61 @@ export function metadataConstructor({
     icons,
     metadataBase: new URL(process.env.NEXT_PUBLIC_SERVER_URL!),
   };
+}
+
+// export async function getDimensionsFromImgFile(imgFile: File) {
+//   const imgArrBuffer = await imgFile.arrayBuffer();
+//   const imgMetadata = await sharp(imgArrBuffer).metadata();
+//   if (!imgMetadata.width || !imgMetadata.height) throw new Error("Error processing image data");
+//   return { width: imgMetadata.width, height: imgMetadata.height };
+// }
+
+export function getDimensionsFromImgFile(
+  imgFile: File
+): Promise<{ width: number; height: number }> {
+  return new Promise((resolve) => {
+    try {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const imgDataURL = event?.target?.result;
+
+        const userImg = new Image();
+        userImg.crossOrigin = "anonymous";
+        userImg.src = imgDataURL as string;
+        userImg.onload = (event) => {
+          const imgElement = event.target as HTMLImageElement;
+
+          resolve({ width: imgElement.naturalWidth, height: imgElement.naturalHeight });
+        };
+      };
+
+      reader.readAsDataURL(imgFile);
+    } catch {
+      resolve({ width: 0, height: 0 });
+    }
+  });
+}
+
+export function isValidId(id: string): boolean {
+  return isCuid(id);
+}
+
+export function getOrderPrice(caseConfiguration: Configuration) {
+  const { finish, material } = caseConfiguration;
+  let orderTotalPrice = BASE_PRICE;
+  if (material === "polycarbonate") orderTotalPrice += PRODUCT_PRICE.material.polycarbonate;
+  if (finish === "textured") orderTotalPrice += PRODUCT_PRICE.finish.textured;
+
+  return orderTotalPrice;
+}
+
+export function getCaseConfigLabels(caseConfiguration: Configuration) {
+  const caseColor = COLORS.find(
+    (supportedColors) => supportedColors.value === caseConfiguration.color
+  );
+  const phoneModel = MODELS.options.find(
+    (supportedModels) => supportedModels.value === caseConfiguration.model
+  )?.label;
+
+  return { caseColor, phoneModel };
 }

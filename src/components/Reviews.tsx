@@ -39,6 +39,7 @@ const PHONES = [
 function ReviewGrid() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const isInView = useInView(containerRef, { once: true, amount: 0.4 });
+
   const columns = splitArray(PHONES, 3);
   const column01 = columns[0];
   const column02 = columns[1];
@@ -49,7 +50,7 @@ function ReviewGrid() {
       ref={containerRef}
       className="relative -mx-4 mt-16 grid h-[49rem] max-h-[150vh] grid-cols-1 items-start gap-8 overflow-hidden px-4 sm:mt-20 md:grid-cols-2 lg:grid-cols-3"
     >
-      {isInView ? (
+      {isInView && (
         <>
           <ReviewColumn
             reviews={[...column01, ...column03.flat(), ...column02]}
@@ -69,7 +70,7 @@ function ReviewGrid() {
           />
           <ReviewColumn reviews={column03.flat()} className="hidden md:block" msPerPixel={10} />
         </>
-      ) : null}
+      )}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-slate-100" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-slate-100" />
     </div>
@@ -86,11 +87,13 @@ type ReviewColumnType = {
 function ReviewColumn({ reviews, className, reviewClassName, msPerPixel = 0 }: ReviewColumnType) {
   const columnRef = useRef<HTMLDivElement | null>(null);
   const [columnHeight, setColumnHeight] = useState(0);
+
   const duration = `${columnHeight * msPerPixel}ms`;
 
-  useEffect(function () {
+  useEffect(() => {
     if (!columnRef.current) return;
-    const resizeObserver = new window.ResizeObserver(function () {
+
+    const resizeObserver = new window.ResizeObserver(() => {
       setColumnHeight(columnRef.current?.offsetHeight ?? 0);
     });
 
