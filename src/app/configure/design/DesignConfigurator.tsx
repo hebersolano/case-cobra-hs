@@ -54,7 +54,7 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: DesignPageProps
   const leftOffset = phoneCaseRef.current ? phoneCase.left - container.left : 0;
   const topOffset = phoneCaseRef.current ? phoneCase.top - container.top : 0;
 
-  const { startUpload, isUploading } = useUploadThing("imageUploader", {
+  const { startUpload, isUploading } = useUploadThing("croppedImgUploader", {
     onClientUploadComplete: ([data]) => {
       const configId = data.serverData.configId;
       router.push(`/configure/preview?id=${configId}`);

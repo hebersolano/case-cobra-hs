@@ -44,3 +44,11 @@ export type CreateStripeSession = (
   userId: string,
   orderId: string
 ) => Promise<string | null>;
+
+export type CreateCaseConfigurationDA = (
+  imgUrl: string,
+  imgDimensions: {
+    width: number;
+    height: number;
+  }
+) => Promise<Configuration>;

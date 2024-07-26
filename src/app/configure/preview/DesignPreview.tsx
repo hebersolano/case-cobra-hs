@@ -5,10 +5,8 @@ import Phone from "@/components/Phone";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { BASE_PRICE, PRODUCT_PRICE } from "@/config/products";
-import { cn, formatPrice, isValidId } from "@/lib/utils";
-import { COLORS, MODELS } from "@/lib/validators/option-validator";
+import { cn, formatPrice, getCaseConfigLabels, getOrderPrice, isValidId } from "@/lib/utils";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
-import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/types";
 import { ArrowRight, Check } from "lucide-react";
 import { notFound, useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -25,28 +23,32 @@ function DesignPreview() {
   const id = searchParams.get("id");
   if (!id || typeof id !== "string" || !isValidId(id)) notFound();
 
-  const {
-    data: userConfig,
-    error,
-    isLoading,
-  } = useSWR("case-configuration", getCaseConfigurationAction.bind(null, id!), {
-    errorRetryInterval: 500,
-    errorRetryCount: 2,
-    onError: (e) =>
-      toast({
-        title: "Something went wrong",
-        description: e?.message || e,
-        variant: "destructive",
-      }),
-  });
+  const { data: userCaseConfig, isLoading } = useSWR(
+    "case-configuration",
+    getCaseConfigurationAction.bind(null, id!),
+    {
+      errorRetryInterval: 500,
+      errorRetryCount: 2,
+      onError: (e) =>
+        toast({
+          title: "Something went wrong",
+          description: e?.message || e,
+          variant: "destructive",
+        }),
+    }
+  );
 
-  if (isLoading && userConfig === undefined) return <Loading />;
-  if (userConfig === false) notFound();
+  if (isLoading && userCaseConfig === undefined) return <Loading />;
+  if (userCaseConfig === false) notFound();
 
-  const { id: configId, croppedImgUrl, color, model, finish, material } = userConfig!;
+  const { id: configId, croppedImgUrl, finish, material } = userCaseConfig!;
 
-  async function handleCheckout(getUser: () => KindeUser | null) {
-    let user = getUser();
+  const { caseColor, phoneModel } = getCaseConfigLabels(userCaseConfig!);
+
+  const orderPrice = getOrderPrice(userCaseConfig!);
+
+  async function handleCheckout() {
+    const user = getUser();
 
     if (user?.id) {
       const { url } = await createCheckoutSessionAction({ configId });
@@ -57,15 +59,6 @@ function DesignPreview() {
       setIsLoginModalOpen(true);
     }
   }
-
-  const caseColor = COLORS.find((supportedColors) => supportedColors.value === color);
-  const phoneModel = MODELS.options.find(
-    (supportedModels) => supportedModels.value === model
-  )?.label;
-
-  let orderTotalPrice = BASE_PRICE;
-  if (material === "polycarbonate") orderTotalPrice += PRODUCT_PRICE.material.polycarbonate;
-  if (finish === "textured") orderTotalPrice += PRODUCT_PRICE.finish.textured;
 
   return (
     <div className="mt-20 flex flex-col items-center md:grid text-sm sm:grid-cols-12 sm:grid-rows-1 sm:gap-x-6 md:gap-x-8 lg:gap-x-12">
@@ -115,6 +108,15 @@ function DesignPreview() {
                 <p className="font-medium text-gray-900"> {formatPrice(BASE_PRICE)}</p>
               </div>
 
+              {material === "polycarbonate" && (
+                <div className="flex items-center justify-between py-1 mt-2">
+                  <p className="text-gray-600 ">Soft polycarbonate material: &nbsp; </p>
+                  <p className="font-medium text-gray-900">
+                    {formatPrice(PRODUCT_PRICE.material.polycarbonate)}
+                  </p>
+                </div>
+              )}
+
               {finish === "textured" && (
                 <div className="flex items-center justify-between py-1 mt-2">
                   <p className="text-gray-600 ">Textured finish: &nbsp; </p>
@@ -128,14 +130,14 @@ function DesignPreview() {
 
               <div className="flex items-center justify-between py-2">
                 <p className="font-semibold text-gray-900">Order total</p>
-                <p className="font-semibold text-gray-900">{formatPrice(orderTotalPrice)}</p>
+                <p className="font-semibold text-gray-900">{formatPrice(orderPrice)}</p>
               </div>
             </div>
           </div>
 
           <div className="mt-8 flex justify-end pb-12">
             <Button
-              onClick={startRedirecting.bind(null, () => handleCheckout(getUser))}
+              onClick={startRedirecting.bind(null, handleCheckout)}
               isLoading={isRedirecting}
               loadingText="redirecting..."
               disabled={isRedirecting}

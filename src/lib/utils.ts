@@ -5,6 +5,7 @@ import { Metadata } from "next";
 import { isCuid } from "@paralleldrive/cuid2";
 import { Configuration } from "@prisma/client";
 import { BASE_PRICE, PRODUCT_PRICE } from "@/config/products";
+import { COLORS, MODELS } from "./validators/option-validator";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -136,6 +137,7 @@ export function getDimensionsFromImgFile(
           resolve({ width: imgElement.naturalWidth, height: imgElement.naturalHeight });
         };
       };
+
       reader.readAsDataURL(imgFile);
     } catch {
       resolve({ width: 0, height: 0 });
@@ -154,4 +156,15 @@ export function getOrderPrice(caseConfiguration: Configuration) {
   if (finish === "textured") orderTotalPrice += PRODUCT_PRICE.finish.textured;
 
   return orderTotalPrice;
+}
+
+export function getCaseConfigLabels(caseConfiguration: Configuration) {
+  const caseColor = COLORS.find(
+    (supportedColors) => supportedColors.value === caseConfiguration.color
+  );
+  const phoneModel = MODELS.options.find(
+    (supportedModels) => supportedModels.value === caseConfiguration.model
+  )?.label;
+
+  return { caseColor, phoneModel };
 }

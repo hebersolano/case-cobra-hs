@@ -46,7 +46,6 @@ function UploadPage() {
       if (!imgDimensions.width || !imgDimensions.height) throw new Error();
 
       startUpload(acceptedFiles, {
-        configId: undefined,
         imgDimensions,
       });
       setIsDrayOver(false);
