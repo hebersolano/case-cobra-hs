@@ -52,3 +52,9 @@ export type CreateCaseConfigurationDA = (
     height: number;
   }
 ) => Promise<Configuration>;
+
+export type UpdateCaseConfigurationDA = (
+  configId: string,
+  url: string,
+  caseConfig: OptionsCaseT
+) => Promise<void>;
