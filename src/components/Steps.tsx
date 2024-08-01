@@ -33,7 +33,7 @@ export default function Steps() {
   const pathname = usePathname();
 
   return (
-    <ol className="rounded-md bg-white md:flex lg:rounded-none lg:border-r lg:border-gray-200">
+    <ol className=" rounded-md md:flex">
       {STEPS.map((step, i) => {
         const isCurrent = pathname.endsWith(step.url);
         const isCompleted = STEPS.slice(i + 1).some((step) => pathname.endsWith(step.url));

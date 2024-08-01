@@ -55,22 +55,22 @@ function HeroSection() {
                 <Image
                   src={user01}
                   alt="user image"
-                  className="inline-block h-10 w-10 rounded-full ring-2 ring-slate-100"
+                  className="inline-block h-10 w-10 rounded-full ring-2 ring-background"
                 />
                 <Image
                   src={user02}
                   alt="user image"
-                  className="inline-block h-10 w-10 rounded-full ring-2 ring-slate-100"
+                  className="inline-block h-10 w-10 rounded-full ring-2 ring-background"
                 />
                 <Image
                   src={user03}
                   alt="user image"
-                  className="inline-block h-10 w-10 rounded-full ring-2 ring-slate-100"
+                  className="inline-block h-10 w-10 rounded-full ring-2 ring-background"
                 />
                 <Image
                   src={user04}
                   alt="user image"
-                  className="inline-block h-10 w-10 rounded-full ring-2 ring-slate-100"
+                  className="inline-block h-10 w-10 rounded-full ring-2 ring-background"
                 />
               </div>
 

@@ -24,7 +24,7 @@ function ConfigurationForm({ options, setOptions }: configFormProps) {
     <ScrollArea className="relative flex-1 overflow-auto">
       <div
         aria-hidden="true"
-        className="absolute z-10 inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white pointer-events-none"
+        className="absolute z-10 inset-x-0 bottom-0 h-12 bg-gradient-to-t from-background pointer-events-none"
       />
 
       <div className="px-8 pb-12 pt-8">
