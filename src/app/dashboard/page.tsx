@@ -51,7 +51,7 @@ async function page() {
 
   return (
     <div className="flex min-h-screen w-full bg-muted/40">
-      <div className="max-w-7xl w-full mx-auto flex flex-col sm:gap-4 sm:py-4">
+      <div className="max-w-7xl w-full mx-auto flex flex-col sm:gap-4 py-4">
         <div className="flex flex-col gap-16">
           <div className="grid gap-4 sm:grid-cols-2 ">
             <Card>
@@ -88,9 +88,9 @@ async function page() {
               </CardHeader>
             </Card>
           </div>
-          <h1 className="text-4xl font-bold tracking-tight">Incoming orders</h1>
+          <h1 className="text-2xl md:text-4xl font-bold tracking-tight">Incoming orders</h1>
 
-          <Table>
+          <Table className="border">
             <TableHeader>
               <TableRow>
                 <TableHead>Customer</TableHead>

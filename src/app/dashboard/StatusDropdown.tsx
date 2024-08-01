@@ -44,8 +44,8 @@ function StatusDropdown({ id, orderStatus }: { id: string; orderStatus: OrderSta
           <DropdownMenuItem
             key={status}
             className={cn(
-              "flex text-sm gap-1 items-center p-2.5 cursor-default hover:bg-zinc-100",
-              activeStatus === status && "bg-zinc-100"
+              "flex text-sm gap-1 items-center p-2.5 cursor-default hover:bg-muted",
+              activeStatus === status && "bg-muted border border-primary"
             )}
             onClick={handleChangeStatus.bind(null, status as OrderStatus)}
           >
