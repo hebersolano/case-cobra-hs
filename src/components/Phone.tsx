@@ -18,15 +18,16 @@ function Phone({ imgSrc, setTheme, className, ...props }: PhoneProps) {
   const { theme, resolvedTheme } = useTheme();
   const [phoneSrc, setPhoneSrc] = useState(phoneTemplateWhiteEdges);
   const imgRef = useRef(null);
-  console.log(theme, resolvedTheme);
 
   useEffect(
     function () {
+      console.log(resolvedTheme);
       if (setTheme) {
         if (setTheme === "light") setPhoneSrc(phoneTemplateWhiteEdges);
         if (setTheme === "dark") setPhoneSrc(phoneTemplateDarkEdges);
       } else {
         if (resolvedTheme === "dark") setPhoneSrc(phoneTemplateDarkEdges);
+        if (resolvedTheme === "light") setPhoneSrc(phoneTemplateWhiteEdges);
       }
     },
     [resolvedTheme, setTheme]

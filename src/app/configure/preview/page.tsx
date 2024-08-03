@@ -5,7 +5,7 @@ import Loading from "@/components/Loading";
 async function PreviewPage() {
   return (
     <Suspense fallback={<Loading />}>
-      <DesignPreview />;
+      <DesignPreview />
     </Suspense>
   );
 }
