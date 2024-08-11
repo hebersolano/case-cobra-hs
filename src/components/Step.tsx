@@ -14,11 +14,12 @@ function Step({ step, index, isCompleted, isCurrent }: StepType) {
       <div>
         <span
           className={cn(
-            "absolute left-0 top-0 h-full w-1 bg-zinc-400 md:bottom-0 md:top-auto md:h-1 md:w-full",
-            { "bg-zinc-700": isCurrent, "bg-primary": isCompleted }
+            "absolute left-0 top-0 h-full w-1 bg-foreground md:bottom-0 md:top-auto md:h-1 md:w-full",
+            { "bg-secondary": isCurrent, "bg-primary": isCompleted }
           )}
           aria-hidden="true"
         />
+
         <span
           className={cn(
             index !== 0 && "lg:pl-9",
@@ -29,22 +30,19 @@ function Step({ step, index, isCompleted, isCurrent }: StepType) {
             <Image
               src={step.img}
               alt="step image"
-              className={cn("flex h-20 w-20 object-contain items-center justify-center", {
-                "border-zinc-700": isCurrent,
-                "border-none": isCompleted,
-              })}
+              className="flex h-20 w-20 object-contain items-center justify-center"
             />
           </span>
           <span className="ml-4 h-full mt-0.5 flex min-w-0 flex-col justify-center">
             <span
-              className={cn("text-sm font-semibold text-zinc-700 ", {
-                "text-zinc-700": isCurrent,
+              className={cn("text-sm font-semibold text-foreground ", {
+                "text-secondary": isCurrent,
                 "text-primary": isCompleted,
               })}
             >
               {step.name}
             </span>
-            <span className="text-sm text-zinc-500">{step.description}</span>
+            <span className="text-sm text-muted-foreground">{step.description}</span>
           </span>
         </span>
 

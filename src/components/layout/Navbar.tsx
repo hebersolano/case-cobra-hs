@@ -6,17 +6,18 @@ import { buttonVariants } from "../ui/button";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { checkIsAdmin } from "@/lib/utils";
 import { RegisterLink, LoginLink, LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
+import { ModeToggle } from "../mode-toggle";
 
 function Nabvar() {
   const { isAuthenticated, getClaim } = useKindeBrowserClient();
   const isAdmin = checkIsAdmin(getClaim("roles"));
 
   return (
-    <nav className="sticky z-[55] h-14 inset-x-0 top-0 w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all">
+    <nav className="sticky z-[55] h-14 inset-x-0 top-0 w-full border-b border-border bg-background/75 backdrop-blur-lg transition-all">
       <MaxWidthWrapper>
-        <div className="flex h-14 items-center justify-between border-b border-zinc-200">
+        <div className="flex h-14 items-center justify-between border-b border-border">
           <Link href="/" className="flex z-40 font-semibold">
-            case<span className="text-green-600">cobra</span>
+            case<span className="text-primary">cobra</span>
           </Link>
 
           <div className="h-full flex items-center space-x-4">
@@ -33,16 +34,6 @@ function Nabvar() {
                     Dashboard
                   </Link>
                 )}
-                <Link
-                  href="/configure/upload"
-                  className={buttonVariants({
-                    size: "sm",
-                    className: "hidden sm:flex items-center gap-1",
-                  })}
-                >
-                  Create case
-                  <ArrowRight className="ml-1.5 h-5 w-5" />
-                </Link>
               </>
             ) : (
               <>
@@ -52,21 +43,22 @@ function Nabvar() {
                 <LoginLink className={buttonVariants({ size: "sm", variant: "ghost" })}>
                   Login
                 </LoginLink>
-
-                <div className="h-8 w-px bg-zinc-200 hidden sm:block"></div>
-
-                <Link
-                  href="/configure/upload"
-                  className={buttonVariants({
-                    size: "sm",
-                    className: "hidden sm:flex items-center gap-1",
-                  })}
-                >
-                  Create case
-                  <ArrowRight className="ml-1.5 h-5 w-5" />
-                </Link>
               </>
             )}
+            <div className="h-8 w-px bg-background hidden sm:block"></div>
+
+            <ModeToggle />
+
+            <Link
+              href="/configure/upload"
+              className={buttonVariants({
+                size: "sm",
+                className: "hidden sm:flex items-center gap-1",
+              })}
+            >
+              Create case
+              <ArrowRight className="ml-1.5 h-5 w-5" />
+            </Link>
           </div>
         </div>
       </MaxWidthWrapper>

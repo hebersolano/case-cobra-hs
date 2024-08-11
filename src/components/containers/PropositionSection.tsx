@@ -10,10 +10,10 @@ import Reviews from "../Reviews";
 
 function PropositionSection() {
   return (
-    <section className="bg-slate-100 py-24">
+    <section className="bg-background-second py-24">
       <MaxWidthWrapper className="flex flex-col items-center gap-16 sm:gap-32">
         <div className="flex flex-col lg:flex-row items-center gap-4 sm:gap-6">
-          <h2 className="order-1 mt-2 tracking-tight text-center text-balance !leading-tight font-bold text-5xl md:text-6xl text-gray-900">
+          <h2 className="order-1 mt-2 tracking-tight text-center text-balance !leading-tight font-bold text-5xl md:text-6xl">
             What our{" "}
             <span className="relative px-2">
               customers
@@ -24,7 +24,7 @@ function PropositionSection() {
           <Image src={snake02} alt="snake logo" className="w-24 order-0 lg:order-2" />
         </div>
 
-        <div className="mx-auto grid max-w-2xl grid-cols-1 px-4 lg:mx-0 lg:max-w-none lg:grid-cols-2 gap-y-16">
+        <div className="bg-background-second mx-auto grid max-w-2xl grid-cols-1 px-4 lg:mx-0 lg:max-w-none lg:grid-cols-2 gap-y-16">
           {/* review 01 */}
           <div className="flex flex-auto flex-col gap-4 lg:pr-8 xl:pr-20">
             <div className="flex gap-0.5 mb-2">
@@ -39,9 +39,11 @@ function PropositionSection() {
               <p>
                 &quot;The case feels durable and I even got a compliment on the design. Had the case
                 for two and a half months now and{" "}
-                <span className="p-0.5 bg-slate-800 text-white">the image is super clear.</span>, on
-                the case I had before, the image started fading into yellow-ish color after a couple
-                of weeks. Love it.&quot;
+                <span className="p-0.5 text-background-second bg-foreground">
+                  the image is super clear.
+                </span>
+                , on the case I had before, the image started fading into yellow-ish color after a
+                couple of weeks. Love it.&quot;
               </p>
             </div>
 
@@ -51,7 +53,7 @@ function PropositionSection() {
                 <p className="font-semibold">Jonathan</p>
                 <div className="flex gap 1.5 items-center text-zinc-600">
                   <Check className="h-4 w-4 stroke-[3px] text-green-600 " />
-                  <p className="text-sm">Verified Purchase</p>
+                  <p className="text-sm text-muted-foreground">Verified Purchase</p>
                 </div>
               </div>
             </div>
@@ -72,7 +74,7 @@ function PropositionSection() {
                 &quot;I usually keep my phone together with my keys in my pocket and led to some
                 pretty heavy scratch marks on all of my last phone cases. This one, besides a barely
                 noticeable scratch on the corner,{" "}
-                <span className="p-0.5 bg-slate-800 text-white">
+                <span className="p-0.5 bg-foreground text-background-second">
                   looks brand new after about half a year
                 </span>
                 . I dig it. &quot;
@@ -85,7 +87,7 @@ function PropositionSection() {
                 <p className="font-semibold">Carlos</p>
                 <div className="flex gap 1.5 items-center text-zinc-600">
                   <Check className="h-4 w-4 stroke-[3px] text-green-600 " />
-                  <p className="text-sm">Verified Purchase</p>
+                  <p className="text-sm text-muted-foreground">Verified Purchase</p>
                 </div>
               </div>
             </div>

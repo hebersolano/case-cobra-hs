@@ -24,13 +24,13 @@ function ConfigurationForm({ options, setOptions }: configFormProps) {
     <ScrollArea className="relative flex-1 overflow-auto">
       <div
         aria-hidden="true"
-        className="absolute z-10 inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white pointer-events-none"
+        className="absolute z-10 inset-x-0 bottom-0 h-12 bg-gradient-to-t from-background pointer-events-none"
       />
 
       <div className="px-8 pb-12 pt-8">
         <h2 className="tracking-tight font-bold text-3xl ">customize your case</h2>
 
-        <div className="w-full h-px bg-zinc-200 my-6" />
+        <div className="w-full h-px bg-border my-6" />
 
         <div className="relative mt-4 h-full flex flex-col justify-between">
           <div className="flex flex-col gap-6">
@@ -48,10 +48,12 @@ function ConfigurationForm({ options, setOptions }: configFormProps) {
                     value={color}
                     className={({ checked }) =>
                       cn(
-                        "relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 active:ring-0 focus:ring-0 active:outline-none border-2 border-transparent",
+                        "relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 active:ring-0 focus:ring-0 active:outline-none border-2 border-transparent dark:border-[3px]",
                         {
-                          [`border-${color.tw}`]: checked,
-                        }
+                          [`border-${color.tw} dark:shadow-[0_0px_0px_2px_rgba(255,255,255,1)]`]:
+                            checked,
+                        },
+                        "dark:border-foreground"
                       )
                     }
                   >
@@ -71,10 +73,9 @@ function ConfigurationForm({ options, setOptions }: configFormProps) {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
-                    variant="outline"
+                    variant="ghost"
                     role="combobox"
-                    className="w-full jus\
-                "
+                    className="w-full bg-background-second text-foreground"
                   >
                     {options.model.label}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50 " />
@@ -85,17 +86,16 @@ function ConfigurationForm({ options, setOptions }: configFormProps) {
                   {MODELS.options.map((model) => (
                     <DropdownMenuItem
                       key={model.label}
-                      className={cn(
-                        "flex text-sm gap-1 items-center p-1.5 cursor-default hover:bg-zinc-100",
-                        { "bg-zinc-100": model.label === options.model.label }
-                      )}
+                      className={cn("flex text-sm gap-1 items-center p-1.5 cursor-default ", {
+                        "bg-accent": model.label === options.model.label,
+                      })}
                       onClick={() => setOptions((prev) => ({ ...prev, model }))}
                     >
                       {
                         <Check
                           className={cn(
-                            "mr-2 h-4 w-4 opacity-0",
-                            model.label === options.model.label && "opacity-100"
+                            "mr-2 h-4 w-4 invisible",
+                            model.label === options.model.label && "visible"
                           )}
                         />
                       }
@@ -120,19 +120,19 @@ function ConfigurationForm({ options, setOptions }: configFormProps) {
                       value={option}
                       className={({ checked }) => {
                         return cn(
-                          "relative block cursor-pointer rounded-lg bg-white px-6 py-4 shadow-sm border-2 border-zinc-200 focus:outline-none ring-0 focus:ring-0 outline-none sm:flex sm:justify-between",
+                          "relative block cursor-pointer rounded-lg bg-background-second hover:bg-background-second/50 px-6 py-4 shadow-sm border-2 border-transparent focus:outline-none ring-0 focus:ring-0 outline-none sm:flex sm:justify-between",
                           { "border-primary": checked }
                         );
                       }}
                     >
                       <span className="flex items-center">
                         <span className="flex flex-col text-sm ">
-                          <RGLabel className="font-medium text-gray-900 " as="span">
+                          <RGLabel className="font-medium " as="span">
                             {option.label}
                           </RGLabel>
 
                           {option.description && (
-                            <Description className="text-gray-500" as="span">
+                            <Description className="text-muted-foreground" as="span">
                               <span className="block sm:inline">{option.description}</span>
                             </Description>
                           )}
@@ -143,9 +143,7 @@ function ConfigurationForm({ options, setOptions }: configFormProps) {
                         as="span"
                         className="mt-2 flex text-sm sm:ml-4 sm:mt-0 sm:flex-col sm:text-right"
                       >
-                        <span className="font-medium text-gray-900">
-                          {formatPrice(option.price)}
-                        </span>
+                        <span className="font-medium ">{formatPrice(option.price)}</span>
                       </Description>
                     </Radio>
                   ))}

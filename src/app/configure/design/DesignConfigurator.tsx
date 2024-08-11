@@ -124,7 +124,7 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: DesignPageProps
     <div className="relative mt-20 grid grid-cols-1 lg:grid-cols-3 mb-20 pb-20">
       <div
         ref={containerRef}
-        className="relative h-[37.5rem] overflow-hidden col-span-2 w-full max-w-4xl flex items-center justify-center rounded-lg border-2 border-dashed border-grey-300 text-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        className="relative h-[37.5rem] bg-background-second overflow-hidden col-span-2 w-full max-w-4xl flex items-center justify-center rounded-lg border-2 border-dashed border-border text-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
       >
         <div className="relative w-60 bg-opacity-50 pointer-events-none aspect-[896/1831]">
           <AspectRatio
@@ -139,6 +139,7 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: DesignPageProps
               className="pointer-events-none z-50 select-none"
             />
           </AspectRatio>
+
           <div className="absolute z-40 inset-0 left-[3px] top-px right-[3px] bottom-px rounded-[32px] shadow-[0_0_0_99999px_rgba(229,231,235,0.6)]" />
           <div
             className={cn(
@@ -183,11 +184,11 @@ function DesignConfiguration({ configId, imgUrl, imgDimension }: DesignPageProps
         </Rnd>
       </div>
 
-      <div className="h-[37.5rem] w-full col-span-full lg:col-span-1 flex flex-col bg-white">
+      <div className="h-[37.5rem] w-full col-span-full lg:col-span-1 flex flex-col ">
         <ConfigurationForm options={options} setOptions={setOptions} />
 
-        <div className="w-full px-8 h-16 bg-white">
-          <div className="h-px w-full bg-zinc-200" />
+        <div className="w-full px-8 h-16 bg-background">
+          <div className="h-px w-full bg-border" />
           <div className="w-full h-full flex justify-end items-center">
             <div className="w-full flex gap-6 items-center">
               <p className="font-medium whitespace-nowrap">

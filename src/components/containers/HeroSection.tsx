@@ -14,16 +14,16 @@ import Phone from "@/components/Phone";
 
 function HeroSection() {
   return (
-    <section>
+    <section className="bg-secondBg">
       <MaxWidthWrapper className="pb-24 pt-10 lg:grid lg:grid-cols-3 sm:pb-32 lg:gap-x-0 xl:gap-x-8 lg:pt-24 xl:pt-32 lg:pb-52">
         <div className="col-span-2 px-6 lg:px-0 lg:pt-4">
           <div className="relative mx-auto text-center lg:text-left flex flex-col items-center lg:items-start">
             <div className="absolute w-28 left-0 -top-20 hidden lg:block">
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t via-slate-50/50 from-slate-50 h-28" />
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t via-background/50 from-background h-28" />
               <Image className="w-full" src={snake01} alt="logo-cobra-case" />
             </div>
 
-            <h1 className="relative w-fit tracking-tight text-balance mt-16 font-bold !leading-tight text-gray-900 text-5xl md:text-6xl lg:text-7xl">
+            <h1 className="relative w-fit tracking-tight text-balance mt-16 font-bold !leading-tight text-5xl md:text-6xl lg:text-7xl">
               Your Image on a <span className="bg-green-600 text-white px-2">Custom</span> Phone
               Case
             </h1>
@@ -55,22 +55,22 @@ function HeroSection() {
                 <Image
                   src={user01}
                   alt="user image"
-                  className="inline-block h-10 w-10 rounded-full ring-2 ring-slate-100"
+                  className="inline-block h-10 w-10 rounded-full ring-2 ring-background"
                 />
                 <Image
                   src={user02}
                   alt="user image"
-                  className="inline-block h-10 w-10 rounded-full ring-2 ring-slate-100"
+                  className="inline-block h-10 w-10 rounded-full ring-2 ring-background"
                 />
                 <Image
                   src={user03}
                   alt="user image"
-                  className="inline-block h-10 w-10 rounded-full ring-2 ring-slate-100"
+                  className="inline-block h-10 w-10 rounded-full ring-2 ring-background"
                 />
                 <Image
                   src={user04}
                   alt="user image"
-                  className="inline-block h-10 w-10 rounded-full ring-2 ring-slate-100"
+                  className="inline-block h-10 w-10 rounded-full ring-2 ring-background"
                 />
               </div>
 
@@ -96,7 +96,7 @@ function HeroSection() {
             <Image
               src={yourImage}
               alt="example of your image on a case"
-              className="absolute w-40 lg:w-52 left-56 -top-20 select-none hidden sm:block lg:hidden xl:block"
+              className="absolute w-40 lg:w-52 left-56 -top-20 select-none hidden sm:block lg:hidden xl:block dark:invert"
             />
             <Image src={lineImg} alt="" className="absolute w-20 -left-6 -bottom-6 select-none" />
             <Phone className="w-64" imgSrc={testimonial01} />

@@ -4,10 +4,12 @@ import db from "@/db";
 import { OptionsCaseT } from "@/lib/types";
 import createCaseConfigurationUC from "@/use-cases/create-case-configuration-UC";
 import createCaseConfigurationDA from "@/data-access/create-case-configuration-DA";
+import updateCaseConfigurationUC from "@/use-cases/update-case-configuration-UC";
+import updateCaseConfigurationDA from "@/data-access/update-case-configuration-DA";
+import { isValidId } from "@/lib/utils";
 
 const fileUploader = createUploadthing();
 
-// FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
   imageUploader: fileUploader({ image: { maxFileSize: "4MB", maxFileCount: 1, minFileCount: 1 } })
     .input(
@@ -47,21 +49,14 @@ export const ourFileRouter = {
     })
     .onUploadComplete(async ({ metadata, file }) => {
       const { configId, caseConfig } = metadata.input;
+      const { url } = file;
 
-      const updatedConfiguration = await db.configuration.update({
-        where: {
-          id: configId,
-        },
-        data: {
-          croppedImgUrl: file.url,
-          color: caseConfig?.color.value,
-          model: caseConfig?.model.value!,
-          material: caseConfig?.material.value,
-          finish: caseConfig?.finish.value,
-        },
-      });
+      updateCaseConfigurationUC(
+        { isValidId, updateCaseConfigurationDA },
+        { configId, url, caseConfig }
+      );
 
-      return { configId: updatedConfiguration.id };
+      return { configId };
     }),
 } satisfies FileRouter;
 

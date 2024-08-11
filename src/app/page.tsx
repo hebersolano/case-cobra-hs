@@ -4,7 +4,7 @@ import PropositionSection from "@/components/containers/PropositionSection";
 
 export default function Home() {
   return (
-    <div className="bg-slate-50">
+    <div>
       <HeroSection />
 
       <PropositionSection />

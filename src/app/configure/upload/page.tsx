@@ -61,9 +61,9 @@ function UploadPage() {
   return (
     <div
       className={cn(
-        "relative h-full flex flex-1 justify-center flex-col items-center my-16 w-full rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:rounded-2xl ",
+        "py-16 md:py-0 relative h-full flex flex-1 justify-center flex-col items-center my-16 w-full rounded-xl bg-background-second ring-1 ring-inset ring-border lg:rounded-2xl cursor-pointer",
         {
-          "ring-blue-900/25 bg-blue-900/10": isDragOver,
+          "ring-2 ring-primary": isDragOver,
         }
       )}
     >
@@ -85,24 +85,24 @@ function UploadPage() {
           {({ getRootProps, getInputProps }) => {
             return (
               <div
-                className="h-full w-full flex-1 flex flex-col items-center justify-center"
+                className="h-full w-full flex-1 flex flex-col items-center justify-center text-muted-foreground"
                 {...getRootProps()}
               >
                 <input {...getInputProps()} />
 
                 {isDragOver ? (
-                  <MousePointerSquareDashed />
+                  <MousePointerSquareDashed className="h-6 w-6 mb-2" />
                 ) : isUploading || isPending ? (
-                  <Loader2 className="animate-spin h-6 w-6" />
+                  <Loader2 className="animate-spin h-6 w-6 mb-2" />
                 ) : (
-                  <ImageDown className="h-6 w-6 text-zinc-500 mb-2" />
+                  <ImageDown className="h-6 w-6 mb-2" />
                 )}
 
-                <div className="flex flex-col justify-center mb-2 text-sm text-zinc-700">
+                <div className="flex flex-col justify-center mb-2 text-sm">
                   {isUploading ? (
                     <div className="flex flex-col items-center">
                       <p>Uploading...</p>
-                      <Progress value={uploadProgress} className="mt-2 w-40 h-2 bg-gray-300" />
+                      <Progress value={uploadProgress} className="mt-2 w-40 h-2 bg-foreground" />
                     </div>
                   ) : isPending ? (
                     <div className="flex flex-col items-center">
@@ -119,7 +119,9 @@ function UploadPage() {
                   )}
                 </div>
 
-                {!isPending && <p className="text-sm text-zinc-500">PNG, JPG, JPEG</p>}
+                {!isPending && (
+                  <p className="text-sm text-muted-foreground/70">PNG, JPG, JPEG, WEBP</p>
+                )}
               </div>
             );
           }}

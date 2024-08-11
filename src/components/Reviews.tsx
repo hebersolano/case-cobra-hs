@@ -20,7 +20,7 @@ export default function Reviews() {
       <Image
         src={whatPeopleAreBuying}
         alt="what people are buying"
-        className="absolute select-none hidden xl:block -left-32 top-1/3"
+        className="absolute select-none hidden xl:block -left-32 top-1/3 dark:invert"
       />
       <ReviewGrid />
     </MaxWidthWrapper>
@@ -71,8 +71,8 @@ function ReviewGrid() {
           <ReviewColumn reviews={column03.flat()} className="hidden md:block" msPerPixel={10} />
         </>
       )}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-slate-100" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-slate-100" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-background-second from-15% to-background-second/0" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background-second from-15% to-background-second/0" />
     </div>
   );
 }
@@ -134,13 +134,13 @@ function Review({ imgSrc, className, ...props }: ReviewProps) {
   return (
     <div
       className={cn(
-        "animate-fade-in rounded-[2.25rem] bg-white p-6 opacity-0  shadow-xl shadow-slate-900/5",
+        "animate-fade-in rounded-[2.25rem] bg-white p-6 opacity-0  shadow-xl shadow-border",
         className
       )}
       style={{ animationDelay }}
       {...props}
     >
-      <Phone imgSrc={imgSrc} />
+      <Phone setTheme="light" imgSrc={imgSrc} />
     </div>
   );
 }
