@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import pRetry, { AbortError } from "p-retry";
+// import pRetry, { AbortError } from "p-retry";
 import { Metadata } from "next";
 import { isCuid } from "@paralleldrive/cuid2";
 import { Configuration } from "@prisma/client";
@@ -20,22 +20,6 @@ export function formatPrice(price: number) {
   return formatter.format(price / 100);
 }
 
-export async function fetchImgBuffer(url: string) {
-  return await pRetry(
-    async function () {
-      const response = await fetch(url);
-
-      // Abort retrying if the resource doesn't exist
-      if (response.status === 404) {
-        throw new AbortError(response.statusText);
-      }
-
-      return await response.arrayBuffer();
-    },
-    { retries: 3 }
-  );
-}
-
 export function dataURLtoFile(dataURL: string, fileName: string) {
   let mimeType = dataURL.split(",")[0].split(":")[1].split(";")[0];
 
@@ -47,6 +31,22 @@ export function dataURLtoFile(dataURL: string, fileName: string) {
       return new File([buf], fileName, { type: mimeType });
     });
 }
+
+// export async function fetchImgBuffer(url: string) {
+//   return await pRetry(
+//     async function () {
+//       const response = await fetch(url);
+
+//       // Abort retrying if the resource doesn't exist
+//       if (response.status === 404) {
+//         throw new AbortError(response.statusText);
+//       }
+
+//       return await response.arrayBuffer();
+//     },
+//     { retries: 3 }
+//   );
+// }
 
 // export function dataURLtoFile(dataurl: string, filename: string) {
 //   let arr = dataurl.split(","),

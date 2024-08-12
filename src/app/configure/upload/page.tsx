@@ -26,6 +26,13 @@ function UploadPage() {
     onUploadProgress(p) {
       setUploadProgress(p);
     },
+    onUploadError() {
+      toast({
+        title: "Something went wrong",
+        description: "There was a problem uploading your image, please try again.",
+        variant: "destructive",
+      });
+    },
   });
 
   function dropRejectedHandler(rejectedFiles: FileRejection[]) {

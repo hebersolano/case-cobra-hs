@@ -29,10 +29,10 @@ function DesignPreview() {
     {
       errorRetryInterval: 500,
       errorRetryCount: 2,
-      onError: (e) =>
+      onError: () =>
         toast({
           title: "Something went wrong",
-          description: e?.message || e,
+          description: "Error retrieving your case configuration",
           variant: "destructive",
         }),
     }
@@ -52,7 +52,14 @@ function DesignPreview() {
 
     if (user?.id) {
       const { url } = await createCheckoutSessionAction({ configId });
-      if (!url) throw new Error("Unable to redirect to Stripe");
+      if (url === undefined) {
+        toast({
+          title: "Something went wrong",
+          description: "There was a problem redirecting you to the payment platform",
+          variant: "destructive",
+        });
+        return;
+      }
       router.push(url);
     } else {
       localStorage.setItem("configurationId", configId);
