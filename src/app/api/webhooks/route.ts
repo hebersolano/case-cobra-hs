@@ -12,7 +12,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export async function POST(req: Request, res: NextApiResponse) {
   try {
     const body = await req.text();
-    const headersList = headers();
+    const headersList = await headers();
 
     const signature = headersList.get("stripe-signature");
     if (!signature) return new NextResponse("Server Error", { status: 400 });

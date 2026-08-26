@@ -7,6 +7,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { metadataConstructor } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 
+// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
+// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
+export const instant = false;
+
 const recursive = Recursive({ subsets: ["latin"] });
 
 export const metadata: Metadata = metadataConstructor();
